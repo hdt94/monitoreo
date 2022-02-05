@@ -1,0 +1,8 @@
+services:
+  live:
+    command: "npm run debug"
+    environment:
+      - DEBUG_PORT=9229
+    ports:
+      - ${PORT_HOST_SERVICE_LIVE:-3000}:${PORT_SERVICE_LIVE:-3000}
+      - ${PORT_HOST_DEBUG_SERVICE_LIVE:-9229}:9229

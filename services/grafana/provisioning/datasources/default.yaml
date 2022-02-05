@@ -1,0 +1,21 @@
+# https://grafana.com/docs/grafana/latest/datasources/postgres/#configure-the-data-source-with-provisioning
+
+apiVersion: 1
+datasources:
+  - name: TimescaleDB
+    access: proxy
+    database: analytics
+    isDefault: true
+    type: postgres
+    # user: postgres
+    user: ${ANALYTICS_DB_USER}
+    # url: localhost:5432
+    # url: analytics_db:5432
+    url: ${ANALYTICS_DB_HOST}:${ANALYTICS_DB_PORT}
+    secureJsonData:
+      # password: 'postgres'
+      password: ${ANALYTICS_DB_PASSWORD}
+    jsonData:
+        sslmode: 'disable' # disable/require/verify-ca/verify-full
+        postgresVersion: 1200 # 903=9.3, 904=9.4, 905=9.5, 906=9.6, 1000=10
+        # timescaledb: true

@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  analytics:
+    command: "npm run debug"
+    environment:
+      - DEBUG_PORT=9229
+    ports:
+      - ${PORT_HOST_SERVICE_ANALYTICS:-3000}:${PORT_SERVICE_ANALYTICS:-3000}
+      - ${PORT_HOST_DEBUG_SERVICE_ANALYTICS:-9229}:9229
+    volumes:
+      - ${PATH_SERVICE_ANALYTICS:-.}/src:/app/src/
+  analytics_db:
+    ports:
+      - 5434:5432

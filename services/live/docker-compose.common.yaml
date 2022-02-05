@@ -1,0 +1,5 @@
+services:
+  live:
+    environment:
+      - GATEWAY_HOST=http://proxy:80
+      - PORT=${PORT_SERVICE_LIVE:-3000}

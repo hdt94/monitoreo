@@ -1,0 +1,12 @@
+services:
+    grafana:
+        environment:
+            - ANALYTICS_DB_HOST=analytics_db
+            - ANALYTICS_DB_PASSWORD=postgres
+            - ANALYTICS_DB_PORT=5432
+            - ANALYTICS_DB_USER=postgres
+            - GF_SECURITY_ADMIN_PASSWORD=admin
+            - HOST_DOMAIN=localhost
+            - HOST_PORT=${PORT_HOST_SERVICE_PROXY:-80}
+        ports:
+            - ${PORT_HOST_SERVICE_GRAFANA:-3000}:${PORT_SERVICE_GRAFANA:-3000}

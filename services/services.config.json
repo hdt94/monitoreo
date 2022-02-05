@@ -1,0 +1,29 @@
+[
+    {
+        "directory": "analytics",
+        "port": "3000",
+        "port_host": "3001",
+        "port_host_debug": "9230"
+    },
+    {
+        "directory": "grafana",
+        "port": "3000",
+        "port_host": "3002"
+    },
+    {
+        "directory": "live",
+        "port": "3000",
+        "port_host": "3003",
+        "port_host_debug": "9231"
+    },
+    {
+        "directory": "proxy",
+        "port_host": "8080"
+    },
+    {
+        "directory": "registry",
+        "port": "3000",
+        "port_host": "3004",
+        "port_host_debug": "9232"
+    }
+]

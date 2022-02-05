@@ -1,0 +1,35 @@
+version: "3.9"
+services:
+  analytics:
+    build:
+      context: ${PATH_SERVICE_ANALYTICS:-.}
+      args:
+        - NODE_ENV=development
+    command: "npm run dev"
+    environment:
+      - NODE_ENV=development
+      - GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys/application_default_credentials.json
+      - PGDATABASE=analytics
+      - PGHOST=analytics_db
+      - PGPASSWORD=postgres
+      - PGPORT=5432
+      - PGUSER=postgres
+      - PUBSUB_TOPIC_STREAM_EXECUTION=${GCP_PUBSUB_TOPIC_STREAM}
+    volumes:
+      - ${GCP_APPLICATION_CREDENTIALS}:/tmp/keys/application_default_credentials.json:ro
+    depends_on:
+    - analytics_db
+  analytics_db:
+    image: postgres:12
+    environment:
+      - POSTGRES_DB=analytics
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - results:/var/lib/postgresql/data/
+      - ${PATH_SERVICE_ANALYTICS:-.}/initdb.d/100-init.sql:/docker-entrypoint-initdb.d/100-init.sql
+      - ${PATH_SERVICE_ANALYTICS:-.}/initdb.d/101-jobs-templates.sql:/docker-entrypoint-initdb.d/101-jobs-templates.sql
+      - ${PATH_SERVICE_ANALYTICS:-.}/initdb.d/110-data.sql:/docker-entrypoint-initdb.d/110-data.sql
+volumes:
+  results:
+    driver: local

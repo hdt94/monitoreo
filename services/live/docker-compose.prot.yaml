@@ -1,0 +1,9 @@
+version: "3.9"
+services:
+  live:
+    build:
+      context: ${PATH_SERVICE_LIVE:-.}
+      args:
+        - NODE_ENV=production
+    environment:
+      - NODE_ENV=production

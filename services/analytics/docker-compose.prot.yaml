@@ -1,0 +1,9 @@
+version: "3.9"
+services:
+  analytics:
+    build:
+      context: ${PATH_SERVICE_ANALYTICS:-.}
+      args:
+        - NODE_ENV=production
+    environment:
+      - NODE_ENV=production

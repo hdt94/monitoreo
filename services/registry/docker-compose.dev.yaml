@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  registry:
+    build:
+      context: ${PATH_SERVICE_REGISTRY:-.}
+      args:
+        - NODE_ENV=development
+    command: "npm run dev"
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys/application_default_credentials.json
+      - MEASURES_FILES_BUCKET=${GS_BUCKET_MEASURES_BATCH}
+      - MEASURES_FILES_DIR=/app/static/uploads
+      - MEASURES_FILES_STORAGE_MODE=${MEASURES_FILES_STORAGE_MODE:-local}
+      - NODE_ENV=development
+    volumes:
+      - ${PATH_SERVICE_REGISTRY:-.}/static/uploads:/app/static/uploads/
+      - ${GCP_APPLICATION_CREDENTIALS}:/tmp/keys/application_default_credentials.json:ro

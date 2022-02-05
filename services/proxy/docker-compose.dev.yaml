@@ -1,0 +1,4 @@
+services:
+  proxy:
+    ports:
+      - ${PORT_HOST_SERVICE_PROXY:-8080}:80

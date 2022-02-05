@@ -1,0 +1,17 @@
+{
+    "access": "proxy",
+    "database": "analytics",
+    "isDefault": true,
+    "jsonData": {
+        "sslmode": "disable",
+        "postgresVersion": 1200
+    },
+    "name": "TimescaleDB",
+    "orgId": null,
+    "secureJsonData": {
+        "password": "${ANALYTICS_DB_PASSWORD}"
+    },
+    "type": "postgres",
+    "url": "${ANALYTICS_DB_HOST}:${ANALYTICS_DB_PORT}",
+    "user": "${ANALYTICS_DB_USER}"
+}

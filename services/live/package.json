@@ -1,0 +1,22 @@
+{
+  "name": "messages",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "debug": "DEBUG=socket* nodemon -L --inspect=0.0.0.0:${DEBUG_PORT:-9229} src/index.js",
+    "dev": "nodemon -L src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "node-fetch": "^2.6.5",
+    "socket.io": "^4.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.13"
+  }
+}

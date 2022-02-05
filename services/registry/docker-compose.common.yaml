@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  registry:
+    environment:
+      - GCP_PROJECT_ID=${GCP_PROJECT_ID:-MISSING_GCP_PROJECT_ID}
+      - PORT=${PORT_SERVICE_REGISTRY:-3000}
+      - STORE_MONGO_DB=registry
+      - STORE_MONGO_URI=mongodb://dev:devpassword@registry_db:27017/
+    depends_on:
+    - registry_db
+  registry_db:
+    image: mongo:4.4.11
+    environment:
+      - MONGO_INITDB_DATABASE=registry
+      - MONGO_INITDB_ROOT_PASSWORD=devpassword
+      - MONGO_INITDB_ROOT_USERNAME=dev
+    volumes:
+      - ${PATH_SERVICE_REGISTRY:-.}/data/initdb/:/docker-entrypoint-initdb.d/:ro
+      - registry:/data/db/
+volumes:
+  registry:
+    driver: local

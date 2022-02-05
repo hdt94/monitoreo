@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  registry:
+    command: "npm run debug"
+    environment:
+      - DEBUG_PORT=9229
+    ports:
+      - ${PORT_HOST_SERVICE_REGISTRY:-3000}:${PORT_SERVICE_REGISTRY:-3000}
+      - ${PORT_HOST_DEBUG_SERVICE_REGISTRY:-9229}:9229
+    volumes:
+      - ${PATH_SERVICE_REGISTRY:-.}/src:/app/src/
+  registry_db:
+    ports:
+      - 27017:27017

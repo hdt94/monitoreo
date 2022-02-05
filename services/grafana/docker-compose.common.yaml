@@ -1,0 +1,16 @@
+volumes:
+    grafana-data:
+        driver: local
+services:
+    grafana:
+        build: ${PATH_SERVICE_GRAFANA:-.}
+        environment:
+            - GF_SECURITY_ALLOW_EMBEDDING=true
+            - GF_SERVER_HTTP_PORT=${PORT_SERVICE_GRAFANA:-3000}
+            - GF_USERS_DEFAULT_THEME=light
+            - PUBLIC_ORG=public
+        volumes:
+            - ${PATH_SERVICE_GRAFANA:-.}/provisioning:/etc/grafana/provisioning
+            - ${PATH_SERVICE_GRAFANA:-.}/dashboards:/var/lib/grafana/dashboards
+            - ${PATH_SERVICE_GRAFANA:-.}/config/grafana.ini:/etc/grafana/grafana.ini
+            - grafana-data:/var/lib/grafana/

@@ -1,0 +1,6 @@
+services:
+    grafana:
+        environment:
+            - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+            - HOST_DOMAIN=${HOST_DOMAIN}
+            - HOST_PORT=80
