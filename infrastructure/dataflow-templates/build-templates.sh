@@ -80,10 +80,10 @@ for template in $(echo $TEMPLATES | jq -c .[]); do
         CLOUDBUILD_FILE=$(echo $template | jq -r .cloudbuild_file)
         CLOUDBUILD_TIMEOUT=$(echo $template | jq -r '.cloudbuild_timeout // "\"\""')
         
-        # gcloud builds submit $BUILD_LOCATION \
-        #     --config $BUILD_LOCATION/$CLOUDBUILD_FILE \
-        #     --timeout $CLOUDBUILD_TIMEOUT \
-        #     --substitutions _OPS_BUCKET_URL=$OPS_BUCKET_URL,_TEMPLATE_IMAGE=$TEMPLATE_IMAGE,_TEMPLATE_PY_MAIN_FILE=$TEMPLATE_PY_MAIN_FILE,_TEMPLATE_VERSION=$VERSION
+        gcloud builds submit $BUILD_LOCATION \
+            --config $BUILD_LOCATION/$CLOUDBUILD_FILE \
+            --timeout $CLOUDBUILD_TIMEOUT \
+            --substitutions _OPS_BUCKET_URL=$OPS_BUCKET_URL,_TEMPLATE_IMAGE=$TEMPLATE_IMAGE,_TEMPLATE_PY_MAIN_FILE=$TEMPLATE_PY_MAIN_FILE,_TEMPLATE_VERSION=$VERSION
     else
         echo "Unknown builder: \"$BUILDER\"" >&2
         exit 1

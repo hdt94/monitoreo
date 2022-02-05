@@ -28,6 +28,7 @@ data "google_project" "project" {
 
 resource "google_project_service" "service" {
   for_each = toset([
+    "cloudbuild.googleapis.com",
     "sql-component.googleapis.com",
     "sqladmin.googleapis.com",
   ])

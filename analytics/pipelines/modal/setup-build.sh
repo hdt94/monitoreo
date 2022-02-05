@@ -14,11 +14,17 @@ fi
 
 echo "Setting up directory for build..."
 
-EXTRA_PACKAGES_DIR_CHILDREN=$(find $EXTRA_PACKAGES_DIR/* -maxdepth 0 -type d)
-if [[ ! -z $EXTRA_PACKAGES_DIR_CHILDREN ]]; then
+if [[ -d $EXTRA_PACKAGES_DIR ]]; then
     echo "Removing current extra packages..."
-    rm -r $EXTRA_PACKAGES_DIR_CHILDREN
+    rm -r $EXTRA_PACKAGES_DIR
 fi
+
+mkdir -p $EXTRA_PACKAGES_DIR
+# EXTRA_PACKAGES_DIR_CHILDREN=$(find $EXTRA_PACKAGES_DIR/* -maxdepth 0 -type d)
+# if [[ ! -z $EXTRA_PACKAGES_DIR_CHILDREN ]]; then
+#     echo "Removing current extra packages..."
+#     rm -r $EXTRA_PACKAGES_DIR_CHILDREN
+# fi
 
 for package in $LOCAL_PACKAGES; do
     echo "Copying \"$package\"..."
