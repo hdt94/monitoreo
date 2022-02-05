@@ -1,0 +1,13 @@
+.vagrant/
+.vscode/
+
+.ipynb_checkpoints/
+__pycache__/
+.venv/
+venv/
+venv*/
+virtualenv/
+
+.env
+
+node_modules/
