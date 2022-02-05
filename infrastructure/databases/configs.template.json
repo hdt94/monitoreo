@@ -1,0 +1,7 @@
+[
+    {
+        "database_instance": "analytics-db-instance",
+        "init_location": "${MONITOREO_ROOT}/services/analytics/initdb.d",
+        "proxy_port": 5432
+    }
+]

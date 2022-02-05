@@ -1,0 +1,12 @@
+[
+    {
+        "build_location": "${MONITOREO_ROOT}/analytics/pipelines/modal",
+        "build_setup_script": "setup-build.sh",
+        "cloudbuild_file": "cloudbuild.dataflow-template.yaml",
+        "cloudbuild_timeout": "1h",
+        "execution_types": ["batch", "stream"],
+        "main_py_file": "src/modal.py",
+        "name": "modal",
+        "metadata_json_file": "metadata.dataflow-template.json"
+    }
+]
