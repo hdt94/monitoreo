@@ -1,0 +1,46 @@
+ARG TEMPLATE_PY_MAIN_FILE
+
+ARG BEAM_VERSION=2.34.0
+ARG TEMPLATE_DIR=/dataflow/template
+
+ARG EXTRA_PACKAGES_DIST_DIR=${TEMPLATE_DIR}/extra_packages/dist
+
+FROM gcr.io/cloud-dataflow/v1beta3/python38:$BEAM_VERSION as extra_packages
+ARG EXTRA_PACKAGES_DIST_DIR
+ARG INSTALLATION_DIR=/usr/local/MATLAB/MATLAB_Runtime
+
+ARG EXTRA_PACKAGES_BEAM_DIR=/beam/extra_packages/
+
+WORKDIR $EXTRA_PACKAGES_BEAM_DIR
+COPY ./extra_packages/ ./
+
+RUN apt-get update \
+    && apt-get install -yq zip unzip \
+    && cd ./matlab_modal_id/ \
+    && chmod +x ./runtime.*.sh \
+    && ./runtime.install.sh $INSTALLATION_DIR --remove-installer \
+    && ./runtime.zip.sh $INSTALLATION_DIR --remove-installation \
+    && mv setup.runtime.py setup.py \
+    && python setup.py sdist --dist-dir ${EXTRA_PACKAGES_DIST_DIR} \
+    && cd ../monitoreo/ \
+    && python setup.py sdist --dist-dir ${EXTRA_PACKAGES_DIST_DIR} \
+    && cd ../ \
+    && rm -r ./*
+
+
+FROM gcr.io/cloud-dataflow/v1beta3/python38:$BEAM_VERSION
+ARG EXTRA_PACKAGES_DIST_DIR
+ARG TEMPLATE_DIR
+ARG TEMPLATE_PY_MAIN_FILE
+
+ARG TEMPLATE_ENTRYPOINT=/opt/google/dataflow/python_template_launcher
+COPY --from=gcr.io/dataflow-templates-base/python3-template-launcher-base:20211101_RC00 $TEMPLATE_ENTRYPOINT $TEMPLATE_ENTRYPOINT
+ENTRYPOINT [$TEMPLATE_ENTRYPOINT]
+
+COPY --from=extra_packages $EXTRA_PACKAGES_DIST_DIR $EXTRA_PACKAGES_DIST_DIR
+RUN pip install ${EXTRA_PACKAGES_DIST_DIR}/*.tar.gz
+
+WORKDIR ${TEMPLATE_DIR}
+COPY ${TEMPLATE_PY_MAIN_FILE} ${TEMPLATE_DIR}/main.py
+ENV FLEX_TEMPLATE_PYTHON_PY_FILE="${TEMPLATE_DIR}/main.py" \
+    FLEX_TEMPLATE_PYTHON_EXTRA_PACKAGES="${EXTRA_PACKAGES_DIST_DIR}/matlab_modal_id-R2021a.tar.gz,${EXTRA_PACKAGES_DIST_DIR}/monitoreo-202112.tar.gz"

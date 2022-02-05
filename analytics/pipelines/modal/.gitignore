@@ -1,0 +1,12 @@
+
+pipeline.*.json
+
+dependencies/binaries/
+extra_packages/
+
+notes/
+binaries/
+
+venv/
+venv38/
+venv382/

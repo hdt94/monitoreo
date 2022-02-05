@@ -1,0 +1,12 @@
+
+extra_packages/*/build/
+extra_packages/*/dist/
+extra_packages/*/*.egg-info/
+
+extra_packages/*/README.md
+
+extra_packages/matlab_modal_id/*.m
+
+.venv/
+venv/
+

@@ -1,0 +1,41 @@
+{
+  "name": "Modal Id template",
+  "description": "Template for Modal Id with MATLAB Runtime",
+  "parameters": [
+    {
+      "name": "analysis-literal",
+      "label": "Analysis JSON literal",
+      "helpText": "Analysis JSON literal",
+      "isOptional": true
+    },
+    {
+      "name": "input-files",
+      "label": "Files",
+      "helpText": "Input source files",
+      "isOptional": true
+    },
+    {
+      "name": "input-topic",
+      "label": "Pub/Sub topic",
+      "helpText": "Input source Pub/Sub topic",
+      "isOptional": true
+    },
+    {
+      "name": "env-cloud-secret",
+      "label": "Env Cloud Secret",
+      "helpText": "Cloud Secret with environment configuration"
+    },
+    {
+      "name": "flex-args",
+      "label": "Flex arguments",
+      "helpText": "Arguments for Flex Template such as disk_size_gb",
+      "isOptional": true
+    },
+    {
+      "name": "metadata-literal",
+      "label": "Metadata JSON literal",
+      "helpText": "Metadata JSON literal",
+      "isOptional": true
+    }
+  ]
+}

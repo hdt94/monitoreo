@@ -1,0 +1,48 @@
+ARG BEAM_VERSION=2.34.0
+ARG MCR=/opt/matlab/runtime
+
+# FROM gcr.io/google.com/cloudsdktool/cloud-sdk:latest AS storage
+FROM ubuntu:latest AS matlab_runtime
+ARG MCR
+COPY ./dependencies/matlab/installer_input.txt  ${MCR}/installer_input.txt
+# COPY ./dependencies/matlab/runtime/  /runtime_files/
+# RUN /runtime_files/install -destinationFolder ${MCR} -inputFile ${MCR}/installer_input.txt
+COPY ./dependencies/matlab/runtime/installer.zip /temp_matlab_runtime/installer.zip
+RUN apt-get update \
+    && apt-get install unzip \
+    && unzip /temp_matlab_runtime/installer.zip -d /temp_matlab_runtime/ \
+    && rm /temp_matlab_runtime/installer.zip \
+    && /temp_matlab_runtime/install -destinationFolder $MCR -inputFile ${MCR}/installer_input.txt \
+    && rm -r /temp_matlab_runtime/
+
+# Custom container
+FROM apache/beam_python3.8_sdk:$BEAM_VERSION
+ARG MCR
+
+# MATLAB Runtime
+COPY --from=matlab_runtime ${MCR} ${MCR}
+ENV LD_LIBRARY_PATH=${MCR}/v910/runtime/glnxa64:${MCR}/v910/bin/glnxa64:${MCR}/v910/sys/os/glnxa64:${MCR}/v910/extern/bin/glnxa64:${MCR}/v910/sys/opengl/lib/glnxa64
+# https://la.mathworks.com/matlabcentral/answers/747107-why-do-i-get-matlab-is-selecting-software-opengl-rendering-indicating-missing-x11-libraries
+RUN apt-get update && apt-get -y install xorg-dev
+
+# Binaries
+WORKDIR /dependencies/binaries/
+COPY ./dependencies/binaries/ ./
+
+# Data
+WORKDIR /data/
+COPY ./data/ ./
+
+# MATLAB packages
+WORKDIR /dependencies/matlab/
+COPY ./dependencies/matlab/out ./
+RUN python3 setup.py install
+
+# Monitoreo package
+WORKDIR /dependencies/monitoreo/
+COPY ./dependencies/monitoreo/requirements.txt ./requirements.txt
+RUN pip install -r requirements.txt
+COPY ./dependencies/monitoreo/ ./
+RUN python3 setup.py install
+
+WORKDIR /

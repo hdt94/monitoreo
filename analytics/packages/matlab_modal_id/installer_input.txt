@@ -1,0 +1,6 @@
+mode silent
+agreeToLicense yes
+product.MATLAB_Runtime___Core true
+product.MATLAB_Runtime___Numerics true
+product.MATLAB_Runtime___Python true
+product.MATLAB_Runtime___Signal_Processing_Toolbox_Addin true

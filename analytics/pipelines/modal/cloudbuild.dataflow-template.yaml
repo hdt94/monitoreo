@@ -1,0 +1,31 @@
+steps:
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk:370.0.0-slim
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        chmod +x extra_packages/matlab_modal_id/runtime.download.sh &&
+        extra_packages/matlab_modal_id/runtime.download.sh \
+          extra_packages/matlab_modal_id/ \
+          ${_OPS_BUCKET_URL}
+  - name: gcr.io/cloud-builders/docker
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        docker build \
+          -t ${_REF_1} \
+          -t ${_REF_2} \
+          -f Dockerfile.dataflow-template \
+          --build-arg TEMPLATE_PY_MAIN_FILE=${_TEMPLATE_PY_MAIN_FILE} \
+          .
+images: ["${_REF_1}", "${_REF_2}"]
+substitutions:
+  _OPS_BUCKET_URL: null
+  _REF_1: ${_TEMPLATE_IMAGE}:${BUILD_ID}
+  _REF_2: ${_TEMPLATE_IMAGE}:${_TEMPLATE_VERSION}
+  _TEMPLATE_IMAGE: null
+  _TEMPLATE_VERSION: ${BUILD_ID}
+  _TEMPLATE_PY_MAIN_FILE: null
+options:
+  dynamic_substitutions: true

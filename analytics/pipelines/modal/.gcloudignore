@@ -1,0 +1,6 @@
+#!include:.gitignore
+
+!extra_packages/
+
+data/
+validation/
