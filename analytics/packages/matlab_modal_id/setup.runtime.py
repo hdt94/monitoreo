@@ -56,15 +56,15 @@ class install_matlab_runtime(setuptools.Command):
                 raise RuntimeError(
                     f'Command {command_list} failed: Exit code: {p.returncode} Command output: "{stdout_data}"')
 
-        command = f'export LD_LIBRARY_PATH={LD_LIBRARY_PATH}'
-        os.system(command)
-        os.system(f'echo \"{command}\n\" >> ~/.bashrc')
+        # command = f'export LD_LIBRARY_PATH={LD_LIBRARY_PATH}'
+        # os.system(command)
+        # os.system(f'echo \"{command}\n\" >> ~/.bashrc')
 
 
 if __name__ == "__main__":
     setuptools.setup(
         name="matlab_modal_id",
-        version="R2021a",
+        version="20220210",
         platforms=['Linux'],
         data_files=[('', ['installer_input.txt', 'runtime_installation.zip'])],
         packages=['matlab_modal_id'],
