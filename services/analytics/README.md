@@ -10,6 +10,7 @@ All execution submission messages and jobs have an `execution_id`.
 
 - Cloud Dataflow Flex Templates supporting both batch and stream processing must be stored in analytics database as independent records for each type of processing. Insert records using the same container specification path but changing the type of processing as shown in further example.
 - It's possible that this service sends jobs with `executionId` and `templateId` equal to `null` if Cloud Dataflow instance is accessed from other client than this analytics service, for example, data scientists running pipelines from shell.
+- All jobs are currently executed with "machine_type=n1-standard-2". See [templates.js](src/external/dataflow/templates.js)
 
 ## Up and running
 
@@ -69,8 +70,8 @@ Insert registers of Dataflow Templates:
 psql -c "
     INSERT INTO templates (name, container_spec_gcs_path, type, version)
     VALUES
-        ('basic-template', 'gs://qwiklabs-gcp/dataflow/templates/modal.json', 'batch', 'v20221023'),
-        ('basic-template', 'gs://qwiklabs-gcp/dataflow/templates/modal.json', 'stream', 'v20221023');
+        ('modal', 'gs://qwiklabs-gcp/dataflow/templates/modal.json', 'batch', '20221023'),
+        ('modal', 'gs://qwiklabs-gcp/dataflow/templates/modal.json', 'stream', '20221023');
 "
 ```
 

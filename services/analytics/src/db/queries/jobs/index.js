@@ -72,7 +72,7 @@ async function selectJobs({ dataflowJobs }) {
   return { jobs, dataflowJobsWithNewState };
 }
 
-async function selectJobWhereRunningTemplate({ templateId }) {
+async function selectSingleJobWhereRunningTemplate({ templateId }) {
   const {
     rows: [job],
     rowCount: jobCount,
@@ -81,7 +81,8 @@ async function selectJobWhereRunningTemplate({ templateId }) {
       SELECT job_id as id, execution_id, template_id
       FROM jobs
       WHERE last_state = 'JOB_STATE_RUNNING'
-        AND template_id = $1`,
+        AND template_id = $1
+      LIMIT 1`,
     values: [templateId],
   });
 
@@ -135,6 +136,6 @@ async function updateJobsStates({ dataflowJobs }) {
 module.exports = {
   insertJob,
   selectJobs,
-  selectJobWhereRunningTemplate,
+  selectSingleJobWhereRunningTemplate,
   updateJobsStates,
 };

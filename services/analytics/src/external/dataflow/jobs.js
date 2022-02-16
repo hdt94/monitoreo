@@ -7,8 +7,26 @@ const client = new JobsV1Beta3Client({
   projectId,
 });
 
+async function cancelJob({ jobId }) {
+  try {
+    await client.updateJob({
+      jobId,
+      job: {
+        requestedState: 'JOB_STATE_CANCELLED',
+        // requestedState: 'JOB_STATE_DRAINED',
+      },
+      location,
+      projectId,
+    });
+
+    return {};
+  } catch (error) {
+    return { error };
+  }
+}
+
 async function getJob({ jobId }) {
-  const dataflowJob = await client.getJob({
+  const [dataflowJob] = await client.getJob({
     jobId,
     location,
     projectId,
@@ -27,6 +45,7 @@ async function listJobs() {
 }
 
 module.exports = {
+  cancelJob,
   getJob,
   listJobs,
 };

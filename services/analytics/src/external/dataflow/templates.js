@@ -20,6 +20,10 @@ async function launchFlexTemplate({
       containerSpecGcsPath,
       jobName,
       parameters,
+      // TEMP
+      environment: {
+        machineType: 'n1-standard-2',
+      },
     },
   };
 

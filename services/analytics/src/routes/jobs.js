@@ -9,6 +9,7 @@ function initJobsRouter() {
   router.get('/', controllers.readMany);
   router.post('/', inputFilesMiddleware, controllers.createOne);
   router.get('/:id', controllers.readOne);
+  router.post('/:id/cancel', controllers.cancelOne);
 
   return router;
 }

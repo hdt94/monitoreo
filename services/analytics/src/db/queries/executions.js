@@ -22,6 +22,38 @@ async function insertExecution({ templateId, requestType, userId }) {
   return { execution, executionCount };
 }
 
+async function selectExecutions() {
+  const { rows, rowCount } = await pool.query({
+    text: `
+      SELECT
+        execution_id AS id, e.created_at, e.request_type, e.user_id,
+        t.template_id, t.name, t.type, t.version
+      FROM executions AS e
+      INNER JOIN templates AS t
+      ON e.template_id = t.template_id;
+    `,
+  });
+
+  if (rowCount === 0) {
+    return { executions: [] };
+  }
+
+  const executions = rows.map((row) => ({
+    id: row.id,
+    createdAt: row.created_at,
+    requestType: row.request_type,
+    template: {
+      id: row.template_id,
+      name: row.name,
+      type: row.type,
+      version: row.version,
+    },
+    userId: row.user_id,
+  }));
+
+  return { executions };
+}
+
 async function updateMessage({ executionId, messageId }) {
   const { rowCount } = await pool.query({
     text: `UPDATE executions
@@ -43,5 +75,6 @@ async function updateMessage({ executionId, messageId }) {
 
 module.exports = {
   insertExecution,
+  selectExecutions,
   updateMessage,
 };

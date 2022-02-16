@@ -1,8 +1,42 @@
 const { launchBatchJob, launchStreamJob } = require('./launch');
+const { notifyUpdate } = require('./notify');
 const { updateJobsStates } = require('./update.js');
 const queries = require('../../db/queries/jobs');
 const { selectOneTemplate } = require('../../db/queries/templates');
 const dataflow = require('../../external/dataflow');
+
+async function cancelOne(req, res) {
+  let dataflowJob;
+  let error;
+  let jobs = [];
+
+  const { id: jobId } = req.params;
+
+  ({ dataflowJob } = await dataflow.getJob({ jobId }));
+  if (dataflowJob.currentState !== 'JOB_STATE_RUNNING') {
+    const message = `Job is not running: "${dataflowJob.name}" "${dataflowJob.id})"`
+    res.status(400).json({ message });
+    return;
+  }
+
+  ({ error } = await dataflow.cancelJob({ jobId }));
+  if (error) {
+    res.status(400).json({ error });
+    return;
+  }
+
+  ({ dataflowJob } = await dataflow.getJob({ jobId }));
+  ({ error, jobs } = await queries.updateJobsStates({
+    dataflowJobs: [dataflowJob],
+  }));
+  if (error) {
+    return res.status(500).json({ error });
+  }
+
+  await res.json(jobs);
+
+  notifyUpdate({ jobs });
+}
 
 async function createOne(req, res) {
   const { templateId } = req.body;
@@ -76,6 +110,7 @@ async function readOne(req, res) {
 }
 
 module.exports = {
+  cancelOne,
   createOne,
   readMany,
   readOne,

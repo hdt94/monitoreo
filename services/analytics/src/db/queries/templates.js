@@ -3,7 +3,7 @@ const { pool } = require('../index');
 async function selectManyTemplates() {
   // TODO filters
   const { rows: templates } = await pool.query({
-    text: 'SELECT template_id AS id, name, type FROM templates',
+    text: 'SELECT template_id AS id, name, type, version FROM templates',
   });
 
   return { templates };

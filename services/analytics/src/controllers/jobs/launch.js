@@ -56,7 +56,9 @@ async function _launchJob({ req, res, executionId, template, templateParams }) {
       .json({ message: 'Job has been started but database updating failed' });
   }
 
-  return { job };
+  await res.json(job);
+
+  notifyCreate({ job });
 }
 
 async function launchBatchJob({ req, res, template }) {
@@ -75,19 +77,13 @@ async function launchBatchJob({ req, res, template }) {
     files,
     userId,
   });
-  const { job } = await _launchJob({
+  await _launchJob({
     executionId,
     req,
     res,
     template,
     templateParams,
   });
-
-  if (!res.headersSent) {
-    await res.json(job);
-
-    notifyCreate({ job });
-  }
 }
 
 async function launchStreamJob({ req, res, template }) {
@@ -105,17 +101,13 @@ async function launchStreamJob({ req, res, template }) {
     executionId,
     userId,
   });
-  const { job } = await _launchJob({
+  await _launchJob({
     executionId,
     req,
     res,
     template,
     templateParams,
   });
-
-  if (!res.headersSent) {
-    res.json(job);
-  }
 }
 
 module.exports = {

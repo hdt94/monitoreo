@@ -1,28 +1,34 @@
-const { launchStreamJob } = require('../jobs/launch');
-const config = require('../../config');
 const {
   insertExecution,
   updateMessage,
 } = require('../../db/queries/executions');
-const { selectJobWhereRunningTemplate } = require('../../db/queries/jobs');
+const {
+  selectSingleJobWhereRunningTemplate,
+} = require('../../db/queries/jobs');
 const { getDataflowEnv } = require('../../external/dataflow/env');
 const { paramsStreamMessage } = require('../../external/dataflow/params');
+const { getJob } = require('../../external/dataflow');
 const { publishMessage } = require('../../external/pubsub');
 
 async function requestStreamExecution({ req, res, template }) {
   const { analysis, files, userId } = req.body;
-
   const templateId = template.id;
 
-  const { jobCount } = await selectJobWhereRunningTemplate({
+  // Verify running job
+  const { job, jobCount } = await selectSingleJobWhereRunningTemplate({
     templateId,
   });
-  // TODO Query Dataflow service if job is still running
   if (jobCount === 0) {
     const message = 'There is no running job for selected template';
     return res.status(422).json({ error: { message } });
   }
+  const { dataflowJob } = await getJob({ jobId: job.id });
+  if (dataflowJob.currentState !== 'JOB_STATE_RUNNING') {
+    const message = `Job is not running: "${dataflowJob.name}" "${dataflowJob.id})"`;
+    return res.status(422).json({ error: { message } });
+  }
 
+  // Publish execution request message
   const { execution, executionCount } = await insertExecution({
     requestType: 'message',
     templateId,
@@ -31,7 +37,7 @@ async function requestStreamExecution({ req, res, template }) {
   if (executionCount !== 1) {
     return res
       .status(500)
-      .json({ error: { message: "Coudln't create execution submission" } });
+      .json({ error: { message: "Couldn't create execution request" } });
   }
 
   const executionId = execution.id;
@@ -59,7 +65,7 @@ async function requestStreamExecution({ req, res, template }) {
     await res.status(400).json({ error: update.error });
   }
 
-  res.json({ executionId, messageId });
+  await res.json(execution);
 }
 
 module.exports = {

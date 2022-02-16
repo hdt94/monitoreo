@@ -1,12 +1,13 @@
 const { requestStreamExecution } = require('./stream');
 
 const { launchBatchJob } = require('../jobs/launch');
-const queries = require('../../db/queries/templates');
+const { selectExecutions } = require('../../db/queries/executions');
+const { selectOneTemplate } = require('../../db/queries/templates');
 
 async function createOne(req, res) {
   const { templateId } = req.body;
 
-  const { template, templateCount } = await queries.selectOneTemplate({
+  const { template, templateCount } = await selectOneTemplate({
     templateId,
   });
   if (templateCount !== 1) {
@@ -28,6 +29,14 @@ async function createOne(req, res) {
   }
 }
 
+async function readMany(req, res) {
+  // TODO filters, pagination
+  const { executions } = await selectExecutions();
+
+  res.json(executions);
+}
+
 module.exports = {
   createOne,
+  readMany,
 };
