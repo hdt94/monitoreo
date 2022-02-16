@@ -20,7 +20,6 @@ const io = new socketio.Server(server, {
 io.on('connection', (socket) => {
   socket.on('join', ({ rooms }) => {
     rooms.forEach((room) => socket.join(room));
-    console.log(rooms);
   });
 
   socket.on('leave', ({ rooms }) => {
