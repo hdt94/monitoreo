@@ -63,6 +63,8 @@ Insert records of Cloud Dataflow Flex Templates following instructions in [analy
 Define environment:
 ```bash
 export GCP_ANALYTICS_ENV_CLOUD_SECRET=
+export GCP_IDENTITY_PLATFORM_API_KEY=
+export GCP_IDENTITY_PLATFORM_AUTH_DOMAIN=
 export GCP_LOCATION=
 export GCP_PROJECT_ID=
 export GCP_PUBSUB_TOPIC_STREAM=

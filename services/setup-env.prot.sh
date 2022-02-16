@@ -13,6 +13,11 @@ if [[ -z $ANALYTICS_ENV ]]; then
     exit
 fi
 
+if [[ -z $MONITOREO_ROOT ]]; then
+    echo "Undefined MONITOREO_ROOT" >2&
+    exit
+fi
+
 parse_env_analytics_datasource() {
     echo "
 ANALYTICS_DB_HOST=$(echo "$ANALYTICS_ENV" | grep -oP '(?<='PGHOST=').*')
@@ -26,8 +31,11 @@ cat << EOF > $DIR/.env
 ${ENV_GCP}
 ${ENV_SERVICES}
 $(parse_env_analytics_datasource)
+
 GRAFANA_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
 HOST_DOMAIN=${HOST_DOMAIN}
 MEASURES_FILES_STORAGE_MODE=${MEASURES_FILES_STORAGE_MODE:-gs}
-COMPOSE_FILE=\${PATH_SERVICE_PROXY}/docker-compose.common.yaml:\${PATH_SERVICE_PROXY}/docker-compose.prot.yaml:\${PATH_SERVICE_ANALYTICS}/docker-compose.common.yaml:\${PATH_SERVICE_ANALYTICS}/docker-compose.prot.yaml:\${PATH_SERVICE_GRAFANA}/docker-compose.common.yaml:\${PATH_SERVICE_GRAFANA}/docker-compose.prot.yaml:\${PATH_SERVICE_LIVE}/docker-compose.common.yaml:\${PATH_SERVICE_LIVE}/docker-compose.prot.yaml:\${PATH_SERVICE_REGISTRY}/docker-compose.common.yaml:\${PATH_SERVICE_REGISTRY}/docker-compose.prot.yaml
+PATH_WEBAPP=${MONITOREO_ROOT}/clients/webapp
+
+COMPOSE_FILE=\${PATH_SERVICE_PROXY}/docker-compose.common.yaml:\${PATH_SERVICE_PROXY}/docker-compose.prot.yaml:\${PATH_SERVICE_ANALYTICS}/docker-compose.common.yaml:\${PATH_SERVICE_ANALYTICS}/docker-compose.prot.yaml:\${PATH_SERVICE_GRAFANA}/docker-compose.common.yaml:\${PATH_SERVICE_GRAFANA}/docker-compose.prot.yaml:\${PATH_SERVICE_LIVE}/docker-compose.common.yaml:\${PATH_SERVICE_LIVE}/docker-compose.prot.yaml:\${PATH_SERVICE_REGISTRY}/docker-compose.common.yaml:\${PATH_SERVICE_REGISTRY}/docker-compose.prot.yaml:\${PATH_WEBAPP}/docker-compose.prot.yaml
 EOF

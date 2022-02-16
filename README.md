@@ -63,6 +63,8 @@ Define general variables:
 ```bash
 export MONITOREO_REPO=
 export GCP_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json
+export GCP_IDENTITY_PLATFORM_API_KEY=
+export GCP_IDENTITY_PLATFORM_AUTH_DOMAIN=
 export GCP_LOCATION=
 export GCP_PROJECT_ID=
 ```
@@ -96,6 +98,7 @@ BUILD_DATAFLOW_TEMPLATES=true ./init-cloud-env.sh
 > - Using local backend for Terraform state may have some issues; using a remote backend such as Cloud Storage or Terraform Cloud is preferable.
 > - Docker is required for running Cloud SQL Auth proxy to connect Cloud SQL service as database is configured with private IP.
 > - Currently there is no CI/CD pipelines for services neither data analytics. Any change to services would require to run Terraform to destroy and create again Compute Engine instance.
+> - Environment variables related to Cloud Identity Platform should be part of a CI/CD pipeline. Those are used within startup script as an initial implementation for prototyping.
 
 In development may be necessary to use `MONITOREO_ROOT` and/or `TERRAFORM_OUTPUT` environment variables for some scripts:
 > Note: following definitions consider directory containing this document as current directory:

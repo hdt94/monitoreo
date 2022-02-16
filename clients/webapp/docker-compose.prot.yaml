@@ -1,0 +1,8 @@
+services:
+  webapp:
+    build:
+      context: ${PATH_WEBAPP:-.}
+      dockerfile: Dockerfile.nginx.prot
+      args:
+        - REACT_APP_IDENTITY_API_KEY=${GCP_IDENTITY_PLATFORM_API_KEY}
+        - REACT_APP_IDENTITY_AUTH_DOMAIN=${GCP_IDENTITY_PLATFORM_AUTH_DOMAIN}

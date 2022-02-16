@@ -46,7 +46,9 @@ if [[ $RUN_TERRAFORM = true ]]; then
         -var MONITOREO_REPO=$MONITOREO_REPO \
         -var PROJECT_ID=$GCP_PROJECT_ID \
         -var REGION=$GCP_LOCATION \
-        -var ZONE=${GCP_LOCATION}-a
+        -var ZONE=${GCP_LOCATION}-a \
+        -var IDENTITY_PLATFORM_API_KEY=${GCP_IDENTITY_PLATFORM_API_KEY} \
+        -var IDENTITY_PLATFORM_AUTH_DOMAIN=${GCP_IDENTITY_PLATFORM_AUTH_DOMAIN}
 fi
 
 export TERRAFORM_OUTPUT=$(terraform -chdir=$TERRAFORM_DIR output -json)

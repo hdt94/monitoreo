@@ -18,19 +18,19 @@ if [[ -z $(which docker-compose) ]]; then
     sudo chmod +x /usr/local/bin/docker-compose
 fi
 
-APP_DIR=/app/
+export MONITOREO_ROOT=/app/
 
-MISSING_APP_DIR=$(
-    if [[ ! -d $APP_DIR ]] || [[ -z "$(ls $APP_DIR)" ]]; then
+MISSING_MONITOREO_ROOT=$(
+    if [[ ! -d $MONITOREO_ROOT ]] || [[ -z "$(ls $MONITOREO_ROOT)" ]]; then
         echo true
     else
         echo false
     fi
 )
 
-if [[ $MISSING_APP_DIR = true ]]; then
-    mkdir -p $APP_DIR
-    git clone ${MONITOREO_REPO} $APP_DIR
+if [[ $MISSING_MONITOREO_ROOT = true ]]; then
+    mkdir -p $MONITOREO_ROOT
+    git clone ${MONITOREO_REPO} $MONITOREO_ROOT
 fi
 
 echo "Defining environment..."
@@ -46,10 +46,13 @@ fi
 
 export ANALYTICS_ENV="$(gcloud secrets versions access $GCP_ANALYTICS_ENV_CLOUD_SECRET)"
 
-chmod +x $APP_DIR/services/setup-env.prot.sh
-ENV_GCP_FROM_USER=true $APP_DIR/services/setup-env.prot.sh
+export GCP_IDENTITY_PLATFORM_API_KEY=${IDENTITY_PLATFORM_API_KEY}
+export GCP_IDENTITY_PLATFORM_AUTH_DOMAIN=${IDENTITY_PLATFORM_AUTH_DOMAIN}
+
+chmod +x $MONITOREO_ROOT/services/setup-env.prot.sh
+ENV_GCP_FROM_USER=true $MONITOREO_ROOT/services/setup-env.prot.sh
 
 echo "Starting services..."
-docker-compose --env-file $APP_DIR/services/.env build -q
-docker-compose --env-file $APP_DIR/services/.env pull -q
-docker-compose --env-file $APP_DIR/services/.env up -d
+docker-compose --env-file $MONITOREO_ROOT/services/.env build -q
+docker-compose --env-file $MONITOREO_ROOT/services/.env pull -q
+docker-compose --env-file $MONITOREO_ROOT/services/.env up -d

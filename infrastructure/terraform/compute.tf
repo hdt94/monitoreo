@@ -14,6 +14,8 @@ resource "google_compute_instance" "vm" {
     MONITOREO_REPO = var.MONITOREO_REPO
     COMPUTE_SECRET_ID = google_secret_manager_secret.compute_services_settings.id
     COMPUTE_SECRET_VERSION = google_secret_manager_secret_version.compute_services_settings.id
+    IDENTITY_PLATFORM_API_KEY = var.IDENTITY_PLATFORM_API_KEY
+    IDENTITY_PLATFORM_AUTH_DOMAIN = var.IDENTITY_PLATFORM_AUTH_DOMAIN
   })
 
   depends_on = [

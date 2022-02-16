@@ -1,4 +1,6 @@
 services:
   proxy:
+    volumes:
+      - ${PATH_SERVICE_PROXY:-.}/nginx.dev.conf:/etc/nginx/nginx.conf:ro
     ports:
       - ${PORT_HOST_SERVICE_PROXY:-8080}:80

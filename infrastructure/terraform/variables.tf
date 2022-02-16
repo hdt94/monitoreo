@@ -13,3 +13,11 @@ variable "REGION" {
 variable "ZONE" {
   type = string
 }
+
+variable "IDENTITY_PLATFORM_API_KEY" {
+  type = string
+}
+
+variable "IDENTITY_PLATFORM_AUTH_DOMAIN" {
+  type = string
+}
