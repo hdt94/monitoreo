@@ -1,0 +1,26 @@
+export function defaultAnalysisParams({ analysisType }) {
+
+  switch (analysisType) {
+    case "modal-identification":
+      return {
+        "response": {
+          "use_matlab": true,
+          "detrend": true,
+          "resampling_rate": 100
+        },
+        "modal": {
+          "technique": "ssi",
+          "technique_params": {
+            "freqtol": 0.05,
+            "mactol": 0.95,
+            "minfound": 5,
+            "npoints": 1800,
+            "order": 16
+          }
+        }
+      }
+        ;
+    default:
+      return null
+  }
+}
