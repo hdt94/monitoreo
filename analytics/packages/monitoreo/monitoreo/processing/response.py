@@ -22,12 +22,12 @@ def detrend_response(element):
 
 
 class ProcessResponseFn(beam.DoFn):
-    def __init__(self, default_analysis={}):
+    def __init__(self, default_analysis={}, enforce_default_analysis=False):
         self.default_analysis = default_analysis
+        self.enforce_default_analysis = enforce_default_analysis
 
     def setup(self):
         logging.info("Setting up ProcessResponseFn")
-        logging.info(os.environ)
 
         import matlab_modal_id
         self._modal_id = matlab_modal_id.runtime.initialize()
@@ -51,7 +51,9 @@ class ProcessResponseFn(beam.DoFn):
         transformation should support both of these types.
         """
 
-        if 'response' in element.get('analysis', {}):
+        if self.enforce_default_analysis and 'response' in self.default_analysis:
+            analysis = self.default_analysis['response']
+        elif 'response' in element.get('analysis', {}):
             analysis = element['analysis']['response']
         elif 'response' in self.default_analysis:
             analysis = self.default_analysis['response']
@@ -84,8 +86,9 @@ class ProcessResponseFn(beam.DoFn):
     #     self._modal_id.terminate()
 
     def _process_with_matlab(self, response_st, sampling_rate, analysis):
+        st = response_st.copy()
         response_matlab = obspy_stream_to_matlab_double(
-            self.__matlab.double, response_st)
+            self.__matlab.double, st)
         resampling_rate = analysis['resampling_rate']
         data_matlab_dict = self._modal_id.process_response({
             'data': response_matlab,
@@ -94,15 +97,15 @@ class ProcessResponseFn(beam.DoFn):
             'frs': resampling_rate,
             'transposing': True
         })
-        st = matlab_double_into_obspy_stream(
-            data_matlab_dict['data'], response_st)
+        matlab_double_into_obspy_stream(
+            data_matlab_dict['data'], st)
 
         return (st, resampling_rate)
 
     def _process_with_obspy(self, response_st, sampling_rate, analysis):
         st = response_st.copy()
 
-        if analysis['detrend']:
+        if analysis.get('detrend', False):
             st.detrend(type='constant')
 
         resampling_rate = None

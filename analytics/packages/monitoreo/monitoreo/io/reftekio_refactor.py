@@ -60,9 +60,22 @@ def _match_files_in_dir(dir_path, glob_pattern='*'):
 
 def reftek_obspy_stream_to_response_dict(element):
     st = element['data']
-    data = {int(tr.stats.reftek130.channel_number): tr.data.tolist() for tr in st}
+    data = {int(tr.stats.reftek130.channel_number): tr.data.tolist()
+            for tr in st}
 
     return {**element, 'data': data}
+
+
+def reftek_obspy_stream_to_response_metrics_dict(element):
+    st = element['data']
+    metadata = element['metadata']
+
+    data = {int(tr.stats.reftek130.channel_number): {
+        'max': tr.max(), 'std': tr.std()}
+        for tr in st}
+    metadata = {**metadata, 'type': 'response_metrics'}
+
+    return {**element, 'data': data, 'metadata': metadata}
 
 
 class ConvertPasscalWithMSeedUtilFn(beam.DoFn):
