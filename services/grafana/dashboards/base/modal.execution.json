@@ -22,7 +22,7 @@
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1642726740249,
+  "iteration": 1646023266437,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -51,10 +51,23 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Channel"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 140
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 8,
+        "h": 7,
         "w": 11,
         "x": 0,
         "y": 0
@@ -68,10 +81,43 @@
           ],
           "show": false
         },
-        "showHeader": true
+        "showHeader": true,
+        "sortBy": []
       },
       "pluginVersion": "8.3.3",
-      "title": "Panel Title",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": null
+          },
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n    time,\r\n    channel_id AS \"Channel\",\r\n    max_abs AS \"Max amplitude [g]\",\r\n    std AS \"STD\"\r\nFROM (\r\n        SELECT jsonb_object_keys(data) AS channel_id\r\n        FROM results\r\n        WHERE metadata->>'execution_id' = '$execution_id'\r\n          AND metadata->>'type'='response_metrics'\r\n    ) channels\r\n    JOIN LATERAL (\r\n        SELECT\r\n            (metadata->>'time_start')::TIMESTAMPTZ AS time,\r\n            data->channel_id->'max' AS max_abs,\r\n            data->channel_id->'std' AS std\r\n        FROM results\r\n        WHERE metadata->>'execution_id' = '$execution_id'\r\n          AND metadata->>'type'='response_metrics'\r\n    ) join_lat ON true\r\nWHERE $__timeFilter(\"time\")\r\nGROUP BY 1, 2, 3, 4\r\nORDER BY 1;",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Response metrics",
       "type": "table"
     },
     {
@@ -127,9 +173,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 7,
         "w": 10,
-        "x": 12,
+        "x": 11,
         "y": 0
       },
       "id": 2,
@@ -243,10 +289,10 @@
         ]
       },
       "gridPos": {
-        "h": 10,
-        "w": 7,
+        "h": 8,
+        "w": 11,
         "x": 0,
-        "y": 8
+        "y": 7
       },
       "id": 6,
       "options": {
@@ -349,10 +395,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 11,
+        "h": 8,
         "w": 10,
-        "x": 12,
-        "y": 8
+        "x": 11,
+        "y": 7
       },
       "id": 4,
       "options": {
@@ -430,6 +476,6 @@
   "timezone": "",
   "title": "Modal - execution",
   "uid": null,
-  "version": 1,
+  "version": 5,
   "weekStart": ""
 }
