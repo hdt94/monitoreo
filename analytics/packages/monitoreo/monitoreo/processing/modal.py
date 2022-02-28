@@ -14,7 +14,7 @@ class ModalIdFn(beam.DoFn):
 
     def setup(self):
         logging.info("Setting up ModalIdFn")
-        logging.info(os.environ)
+        # logging.info(os.environ)
 
         import matlab_modal_id
         self._modal_id = matlab_modal_id.runtime.initialize()
