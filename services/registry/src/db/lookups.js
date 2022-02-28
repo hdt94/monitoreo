@@ -3,8 +3,8 @@ const instrumentsLookupAgg = [
     $lookup: {
       as: 'instruments',
       from: 'instruments',
-      foreignField: '_id',
-      localField: 'instruments_id',
+      let: { matchId: { $toObjectId: '$instruments_id' } },
+      pipeline: [{ $match: { $expr: { $eq: ['$_id', '$$matchId'] } } }],
     },
   },
   { $unwind: { path: '$instruments' } },
@@ -15,8 +15,8 @@ const measuresLookupAgg = [
     $lookup: {
       as: 'measures',
       from: 'measures',
-      foreignField: '_id',
-      localField: 'measures_id',
+      let: { matchId: { $toObjectId: '$measures_id' } },
+      pipeline: [{ $match: { $expr: { $eq: ['$_id', '$$matchId'] } } }],
     },
   },
   { $unwind: { path: '$measures' } },
@@ -27,8 +27,8 @@ const structureLookupAgg = [
     $lookup: {
       as: 'structure',
       from: 'structures',
-      foreignField: '_id',
-      localField: 'structure_id',
+      let: { matchId: { $toObjectId: '$structure_id' } },
+      pipeline: [{ $match: { $expr: { $eq: ['$_id', '$$matchId'] } } }],
     },
   },
   { $unwind: { path: '$structure' } },
