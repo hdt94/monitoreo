@@ -1,7 +1,10 @@
 const { requestStreamExecution } = require('./stream');
 
 const { launchBatchJob } = require('../jobs/launch');
-const { selectExecutions } = require('../../db/queries/executions');
+const {
+  selectExecutions,
+  selectExecutionsWhere,
+} = require('../../db/queries/executions');
 const { selectOneTemplate } = require('../../db/queries/templates');
 
 async function createOne(req, res) {
@@ -31,7 +34,10 @@ async function createOne(req, res) {
 
 async function readMany(req, res) {
   // TODO filters, pagination
-  const { executions } = await selectExecutions();
+  const filters = req.query;
+  const { executions } = filters
+    ? await selectExecutionsWhere(filters)
+    : await selectExecutions();
 
   res.json(executions);
 }

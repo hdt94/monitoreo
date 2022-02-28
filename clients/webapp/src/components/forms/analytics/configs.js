@@ -19,6 +19,7 @@ function validateAsJSON(value) {
   }
 }
 
+const templateId = yup.string().required("Associated template is required");
 
 const baseAnalysisExecutionSchema = {
   analysisParams: yup
@@ -27,7 +28,7 @@ const baseAnalysisExecutionSchema = {
     .test("parameters", "Parameters must be JSON-compatible", validateAsJSON),
   analysisType: yup.string().required("Analysis type is required"),
   executionType: yup.string().required("Execution type is required"),
-  templateId: yup.string().required("Associated template is required"),
+  templateId,
 }
 
 function defaultAnalysisExecution() {
@@ -65,4 +66,17 @@ export const analysisExecutionJobStream = {
     executionType: "stream"
   },
   schema: yup.object().shape(baseAnalysisExecutionSchema)
+}
+
+export const monitoringVisualization = {
+  defaultValues: {
+    analysisType: 'modal-identification',
+    executionType: 'stream',
+    structureId: '',
+    templateId: '',
+  },
+  schema:yup.object().shape({
+    structureId: yup.string().required("Associated structure is required"),
+    templateId
+  })
 }

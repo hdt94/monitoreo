@@ -1,5 +1,16 @@
 import connection from './connection';
 
+export function getMonitoringExecutions({ templateId }) {
+  return connection.request({
+    path: '/api/analytics/executions/',
+    queryParams: {
+      requestType: 'job',
+      templateId,
+    },
+    type: 'read',
+  });
+}
+
 export function getGrafanaDashboards({ tags }) {
   return connection.request({
     path: '/api/grafana/search/',

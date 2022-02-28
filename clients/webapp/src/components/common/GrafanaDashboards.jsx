@@ -35,17 +35,20 @@ function GrafanaDashboards({
   const index = 0;
 
   const dash = dashboards[index];
-  const title = `${dash.title} - execution_id=${executionId}`;
+  const title = `${dash.title} - execution_id=${executionId}`
+    + (structureId ? ` - structure_id=${structureId}` : "");
 
   /* TEMP hardcoded timestamps */
-  const timeStart = new Date("2019-09-10 17:17:07").getTime();
-  const timeEnd = new Date("2019-09-10 17:36:59").getTime();
-  const params = new URLSearchParams({
-    from: timeStart,
-    to: timeEnd,
-    "var-execution_id": executionId
-  });
+  const times = {
+    from: new Date("2019-09-10 17:17:07").getTime(),
+    to: new Date("2019-09-10 17:36:59").getTime()
+  }
+  const vars = {
+    "var-execution_id": executionId,
+    ...(structureId ? { "var-structure_id": structureId } : {})
+  };
 
+  const params = new URLSearchParams({ ...times, ...vars });
   const url = `${window.location.origin}${dash.url}?${params.toString()}`;
 
   return (

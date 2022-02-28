@@ -4,6 +4,7 @@ import Analysis from "./pages/analytics/Analysis";
 import Executions from "./pages/analytics/Executions";
 import Jobs from "./pages/analytics/Jobs";
 import JobStream from "./pages/analytics/JobStream"
+import Monitoring from "./pages/analytics/Monitoring"
 
 import Analyses from "./pages/registry/Analyses";
 import Instruments from "./pages/registry/Instruments";
@@ -37,7 +38,7 @@ export const routes = [
       },
       {
         path: "monitoring",
-        element: <h2>Monitoring</h2>,
+        element: <Monitoring />,
         name: "Monitoring",
       },
       {
