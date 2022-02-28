@@ -13,7 +13,7 @@ COPY_TO_GS=false
 GS_BUCKET_URL=$2
 GS_INSTALLER_PATH=${GS_BUCKET_URL}/matlab2021a/runtime_installer.zip
 if [[ ! -z $GS_BUCKET_URL ]] || [[ $GS_BUCKET_URL == gs* ]]; then
-    gsutil -q ls $GS_INSTALLER_PATH >/dev/null 2>&1
+    gsutil -q stat $GS_INSTALLER_PATH
     if [ $? == 0 ]; then
         COPY_FROM_GS=true
     else
