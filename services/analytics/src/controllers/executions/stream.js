@@ -1,3 +1,4 @@
+const config = require('../../config');
 const {
   insertExecution,
   updateMessage,
@@ -14,18 +15,20 @@ async function requestStreamExecution({ req, res, template }) {
   const { analysis, files, userId } = req.body;
   const templateId = template.id;
 
-  // Verify running job
-  const { job, jobCount } = await selectSingleJobWhereRunningTemplate({
-    templateId,
-  });
-  if (jobCount === 0) {
-    const message = 'There is no running job for selected template';
-    return res.status(422).json({ error: { message } });
-  }
-  const { dataflowJob } = await getJob({ jobId: job.id });
-  if (dataflowJob.currentState !== 'JOB_STATE_RUNNING') {
-    const message = `Job is not running: "${dataflowJob.name}" "${dataflowJob.id})"`;
-    return res.status(422).json({ error: { message } });
+  if (config.PROCESSING_RUNNER !== 'local') {
+    // Verify running job
+    const { job, jobCount } = await selectSingleJobWhereRunningTemplate({
+      templateId,
+    });
+    if (jobCount === 0) {
+      const message = 'There is no running job for selected template';
+      return res.status(422).json({ error: { message } });
+    }
+    const { dataflowJob } = await getJob({ jobId: job.id });
+    if (dataflowJob.currentState !== 'JOB_STATE_RUNNING') {
+      const message = `Job is not running: "${dataflowJob.name}" "${dataflowJob.id})"`;
+      return res.status(422).json({ error: { message } });
+    }
   }
 
   // Publish execution request message

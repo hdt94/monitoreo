@@ -14,6 +14,7 @@ services:
       - PGPASSWORD=postgres
       - PGPORT=5432
       - PGUSER=postgres
+      - PROCESSING_RUNNER={$PROCESSING_RUNNER:-dataflow}
       - PUBSUB_TOPIC_STREAM_EXECUTION=${GCP_PUBSUB_TOPIC_STREAM}
     volumes:
       - ${GCP_APPLICATION_CREDENTIALS}:/tmp/keys/application_default_credentials.json:ro

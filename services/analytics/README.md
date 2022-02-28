@@ -42,6 +42,10 @@ docker-compose \
 
 > Note: any configuration change to "analytics_db" database service in development must be replicated in configuration of "grafana" service as the former is used as datasource in the latter.
 
+Use `PROCESSING_RUNNER=local` to run local stream job subscribed to Cloud Pub/Sub for fast exploratory analysis.
+
+TODO Local execution of batch jobs and monitoring subscribed to Cloud Pub/Sub
+
 #### Dataflow templates
 
 > Note: records of Cloud Dataflow Flex Templates are created in Cloud SQL instance as part of cloud environment initialization. This following instructions are only for local.
