@@ -1,4 +1,6 @@
-function inputFilesMiddleware(req, res, next) {
+const { getMeasuresMetadata } = require('../external/measures');
+
+async function inputFilesMiddleware(req, res, next) {
   // Parse fields related to input files for analytics pipelines
 
   const { input, inputType } = req.body;
@@ -8,24 +10,32 @@ function inputFilesMiddleware(req, res, next) {
     return;
   }
 
-  let files;
-  if (typeof input === 'string') {
-    files = [input];
-  } else if (Array.isArray(input)) {
-    files = input;
-  } else {
-    const message = `Unsupported files input: ${input}`;
-    return res.status(400).json({ error: { message } });
-  }
-
   switch (inputType) {
-    case 'paths': {
-      req.body.files = files;
+    case 'measures': {
+      const measuresId = input;
+      const { data, error } = await getMeasuresMetadata({ measuresId });
+
+      if (error) {
+        res.status(error.status).json({ error });
+        return;
+      }
+
+      req.body.files = data.files;
       break;
     }
-    case 'measures': {
-      // TODO support measures as input
-      return res.status(400).json({ error: { message: `Not supported yet` } });
+    case 'paths': {
+      let files;
+      if (typeof input === 'string') {
+        files = [input];
+      } else if (Array.isArray(input)) {
+        files = input;
+      } else {
+        const message = `Unsupported files input: ${input}`;
+        return res.status(400).json({ error: { message } });
+      }
+
+      req.body.files = files;
+      break;
     }
     default:
   }

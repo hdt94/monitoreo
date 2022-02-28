@@ -22,6 +22,7 @@ class Config {
       'GCP_ANALYTICS_ENV_CLOUD_SECRET',
       'GCP_PROJECT_ID',
       'LIVE_WS_URL',
+      'REGISTRY_URL',
     ];
     envFields.forEach((field) => {
       this[field] = process.env[field];
