@@ -26,14 +26,15 @@ function matchTemplates({ analysisType, executionType, templates }) {
 }
 
 function SelectTemplate({
-  fixedExecutionType,
+  fixedExecutionType = null,
   disabled,
+  name,
   templates
 }) {
-  const { control, errors, setValue } = useFormContext();
+  const { control, formState: { errors }, setValue } = useFormContext();
   const analysisType = useWatch({ control, name: "analysisType" });
   const executionType = useWatch({ control, name: "executionType" });
-  const templateId = useWatch({ control, name: "templateId" });
+  const templateId = useWatch({ control, name });
 
   const templateMatches = useMemo(
     () => matchTemplates({ analysisType, executionType, templates }),
@@ -41,25 +42,20 @@ function SelectTemplate({
   );
 
   const clearTemplateId = () => {
-    setValue("templateId", "");
+    setValue(name, "");
   }
 
   useEffect(() => {
     if (templateMatches.length !== 1) {
-      setValue("templateId", "");
+      setValue(name, "");
       return;
     }
 
     const { id } = templateMatches[0];
     if (templateId !== id) {
-      setValue("templateId", id);
+      setValue(name, id);
     }
   }, [analysisType, executionType, templateMatches]);
-
-  console.log("templateMatches", templateMatches);
-  console.log("analysisType", analysisType);
-  console.log(`executionType: ${executionType}`)
-  console.log(`templateId: ${templateId}`)
 
   return (
     <>
@@ -68,20 +64,22 @@ function SelectTemplate({
         disabled={disabled}
         name="analysisType"
       />
-      <SelectExecutionType
-        control={control}
-        disabled={disabled}
-        errors={errors}
-        fixedExecutionType={fixedExecutionType}
-        name="executionType"
-        onChangeBefore={clearTemplateId}
-        templates={templates}
-      />
+      {fixedExecutionType === null && (
+        <SelectExecutionType
+          control={control}
+          disabled={disabled}
+          errors={errors}
+          fixedExecutionType={fixedExecutionType}
+          name="executionType"
+          onChangeBefore={clearTemplateId}
+          templates={templates}
+        />
+      )}
       <SelectTemplateMatch
         control={control}
         disabled={disabled}
         errors={errors}
-        name="templateId"
+        name={name}
         templates={templateMatches}
       />
     </>

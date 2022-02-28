@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
+import { Paper, Typography } from "@mui/material";
 
 import useInitialRequestEffect from "./useInitialRequestEffect";
 import useSubmitCancelDiscard from "./useSubmitCancelDiscard";
@@ -73,10 +73,10 @@ function Analysis() {
     <>
       <Paper>
         {
-          errors.map(error => <Typography>{error.message}</Typography>)
+          errors.map(error => <Typography key={error}>{error}</Typography>)
         }
         {
-          messages.map(message => <Typography>{message}</Typography>)
+          messages.map(message => <Typography key={message}>{message}</Typography>)
         }
         <AnalysisExecutionForm
           executionState={executionState}
