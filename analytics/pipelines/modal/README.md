@@ -56,15 +56,14 @@ MATLAB Runtime is required for local development and execution. See installation
 
 Define root directories:
 ```bash
-REPO_ROOT=
-PACKAGES_ROOT=${REPO_ROOT}/analytics/packages
+MONITOREO_ROOT=
+PACKAGES_ROOT=${MONITOREO_ROOT}/analytics/packages
 ```
 
 Install packages for development:
 ```bash
-pip install -e $PACKAGES_ROOT/monitoreo
 pip install -e $PACKAGES_ROOT/matlab_modal_id
-pip install -e $PACKAGES_ROOT/matlab_modal_id $PACKAGES_ROOT/monitoreo
+pip install -e $PACKAGES_ROOT/monitoreo
 ```
 > Note: `monitoreo` package is dependent on installation of `matlab_modal_id` package.
 
@@ -81,6 +80,8 @@ modal_id.terminate()
 It should print: `(0, 'You message is "test message"')`
 
 ##### Copy source code
+
+> Note: this is only required if building container images.
 
 As no publishing nor distribution of these packages is made, building container images as Apache Beam Custom Containers or Cloud Dataflow Flex Templates requires to copy packages source code to local context to comply Dockerfile requirements.
 ```bash
@@ -104,6 +105,8 @@ gcloud config set project $GCP_PROJECT_ID
 ```
 
 > Notes: as a reference in case of looking for automation, all of following setup steps are automated with Terraform in [infrastructure/terraform/](/infrastructure/terraform/) through [init-cloud-env.sh](/init-cloud-env.sh) for monitoreo prototype.
+
+TODO script to extract values from TERRAFORM_OUTPUT
 
 #### Cloud Storage
 
@@ -454,9 +457,19 @@ python $SOURCE_FILE \
     --streaming
 ```
 
-> Note: you can process local files with DirectRunner in streaming configuration by defining their corresponding paths or patterns in Cloud Pub/Sub message: `"files": ["file_path_1", "file_path_2", "pattern_1"]`
+Publish message:
+```bash
+gcloud pubsub topics publish $PUBSUB_TOPIC_ID \
+    --attribute=eventType=submission \
+    --message "$(cat pipeline.message.json)"
+```
+> Notes:
+> - you can process local files with DirectRunner in streaming configuration by defining their corresponding paths or patterns in Cloud Pub/Sub message: `"files": ["file_path_1", "file_path_2", "pattern_1"]`
+> - see [configuration of messages](#cloud-pubsub-messages)
 
 ### Custom container
+
+PENDING https://github.com/GoogleCloudPlatform/python-docs-samples/pull/7445/files
 
 #### Build
 

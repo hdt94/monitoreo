@@ -1,7 +1,7 @@
 
 pipeline.*.json
 
-dependencies/binaries/
+dependencies/
 extra_packages/
 
 notes/
