@@ -6,7 +6,7 @@ function paramsBatchJob({ analysis, executionId, files, userId }) {
   return {
     'analysis-literal': JSON.stringify(analysis),
     'env-cloud-secret': envCloudSecret,
-    'input-files': files,
+    'input-files': files.join('::'),
     'metadata-literal': JSON.stringify({
       execution_id: executionId,
       job_execution_id: executionId,

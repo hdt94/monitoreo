@@ -21,13 +21,10 @@ async function _createExecution({ res, templateId, userId }) {
 }
 
 async function _launchJob({ req, res, executionId, template, templateParams }) {
-  const { userId } = req.body;
   const { containerSpecGcsPath, id: templateId } = template;
 
   // jobName must consist of only the characters [-a-z0-9], starting with a letter and ending with a letter or number
-  const jobName = `${
-    template.name
-  }-t${templateId}-e${executionId}-u${userId}-${new Date().getTime()}`;
+  const jobName = `${template.name}-template-${templateId}-execution-${executionId}`;
   const { dataflowJob, error, message } = await dataflow.launchFlexTemplate({
     containerSpecGcsPath,
     jobName,

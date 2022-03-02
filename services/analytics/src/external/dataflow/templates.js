@@ -32,6 +32,7 @@ async function launchFlexTemplate({
 
     return { dataflowJob };
   } catch (err) {
+    console.error(err);
     return { error: true, message: err.message };
   }
 }
