@@ -2,9 +2,13 @@
 
 Define enivronment variables:
 ```bash
-export GCP_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json
 export MONITOREO_ROOT=
 export TERRAFORM_OUTPUT=$(terraform -chdir=$MONITOREO_ROOT/infrastructure/terraform output -json)
+```
+
+If using other than Cloud Shell:
+```
+export GCP_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json
 ```
 > Note: `GCP_APPLICATION_CREDENTIALS` is required to proxy Cloud SQL instances.
 
@@ -24,13 +28,15 @@ Run Cloud SQL Auth proxy container:
 ```
 
 `psql` into database of preference:
-TODO define parameters and password based on TERRAFORM_OUPUT
 ```bash
 INSTANCE_NAME=
-PARAMETERS=$(echo $TERRAFORM_OUPUT | jq '')
-export PGPASSWORD=$(echo $TERRAFORM_OUPUT | jq '')
-export PGPASSWORD=BlsJzrhjCe4tXp5yGGzepEI4O6hZbcJG
-psql -h 127.0.0.1 -p 5432 -d analytics -U compute
+INSTANCE=$(echo $TERRAFORM_OUTPUT | jq ".databases_instances.value.\"$INSTANCE_NAME\"")
+PGDATABASE=$(echo $INSTANCE | jq -r ".database")
+PGPASSWORD=$(echo $INSTANCE | jq -r ".password")
+PGUSER=$(echo $INSTANCE | jq -r ".user")
+PGPORT=$(cat configs.template.json | jq -r ".[] | select(.database_instance == \"$INSTANCE_NAME\") | .proxy_port")
+
+PGPASSWORD=$PGPASSWORD psql -h 127.0.0.1 -p $PGPORT -d $PGDATABASE -U $PGUSER
 ```
 
 Remove Cloud SQL Auth proxy container:

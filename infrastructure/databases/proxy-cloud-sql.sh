@@ -25,10 +25,6 @@ elif [[ $ACTION == "run" ]]; then
         echo 'Undefined "TERRAFORM_OUTPUT"' >&2
         exit 1
     fi
-    if [[ -z $GCP_APPLICATION_CREDENTIALS ]]; then
-        echo 'Undefined "GCP_APPLICATION_CREDENTIALS"' >&2
-        exit 1
-    fi
 
     configs_docker_ports() {
         for config in $(</dev/stdin); do
@@ -59,13 +55,24 @@ elif [[ $ACTION == "run" ]]; then
     fi
 
     echo "Creating Cloud SQL Auth proxy container..."
-    docker run -d --name $CONTAINER_NAME \
-        $DOCKER_PORTS_MAPPING \
-        -v $GCP_APPLICATION_CREDENTIALS:/nonroot/config \
-        -u root \
-        gcr.io/cloudsql-docker/gce-proxy /cloud_sql_proxy \
-        -instances=$INSTANCES \
-        -credential_file=/nonroot/config
+    if [[ $GOOGLE_CLOUD_SHELL == true ]]; then
+        docker run -d --name $CONTAINER_NAME \
+            $DOCKER_PORTS_MAPPING \
+            gcr.io/cloudsql-docker/gce-proxy /cloud_sql_proxy \
+            -instances=$INSTANCES
+    elif [[ -z $GCP_APPLICATION_CREDENTIALS ]]; then
+        echo 'Undefined "GCP_APPLICATION_CREDENTIALS"' >&2
+        exit 1
+    else
+        docker run -d --name $CONTAINER_NAME \
+            $DOCKER_PORTS_MAPPING \
+            -v $GCP_APPLICATION_CREDENTIALS:/nonroot/config \
+            -u root \
+            gcr.io/cloudsql-docker/gce-proxy /cloud_sql_proxy \
+            -instances=$INSTANCES \
+            -credential_file=/nonroot/config
+    fi
+
     echo "Waiting Cloud SQL Auth proxy..."
     sleep 4
     echo "Proxying \"${INSTANCES}\""
