@@ -2,9 +2,10 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 
-import { deleteOneItem, getItems } from "../../../../services/registry";
 import { useRegistry } from "../../../../state/registry";
-import { useConnection } from "../../../contexts/connection";
+
+import useRequestSubscribeEffect from "components/pages/common/tabulation/useRequestSubscribeEffect";
+import { deleteOneItem } from "services/items";
 
 function createRowActions({ editRowFn, deleteRowFn, deletingIds }) {
   return function RowActions(props) {
@@ -58,9 +59,6 @@ function DataTableView({ category, defineTableColumns, enableActions = true, onE
   const [errors, setErrors] = useState([]);
   const [deletingIds, setDeletingIds] = useState([]);
 
-  const { connectionRef } = useConnection();
-  const connection = connectionRef.current;
-
   const registry = useRegistry();
   const { createUpdate, delete_ } = registry;
   const { items } = registry[category];
@@ -76,43 +74,12 @@ function DataTableView({ category, defineTableColumns, enableActions = true, onE
     setErrors([error, ...errors]);
   };
 
-  useEffect(() => {
-    // const namespace = "registry";
-    const rooms = [];
-    // getItems(category)
-    connection
-      .request({
-        path: `/api/registry/${category}`,
-        type: "read",
-      })
-      .then((items) => {
-        createUpdate({ meta: { category }, payload: items });
-
-        // rooms.push(connection.nameRoom({context, category, id}))
-        items.forEach((i) => rooms.push(`${category}:${i.id}`));
-
-        connection.subscribe({
-          category,
-          context: "registry",
-          // namespace,
-          rooms,
-          // onCreateUpdate: createUpdate,
-          // onDelete: delete_,
-        });
-      })
-      .catch((err) => {
-        appendError(err, "loading resources");
-      });
-
-    return () => {
-      connection.unsubscribe({
-        // namespace,
-        rooms,
-      });
-    };
-  }, []);
-
-
+  useRequestSubscribeEffect({
+    category,
+    createUpdate,
+    onError: appendError,
+    subdomain: 'registry'
+  })
 
   // Table columns
   const selectRelationalField = (relationCategory, id, field) =>
@@ -126,12 +93,8 @@ function DataTableView({ category, defineTableColumns, enableActions = true, onE
         setDeletingIds([...deletingIds, rowId]);
       }
 
-      deleteOneItem(category, rowId)
-        // io.request({
-        //   method: 'delete',
-        //   path: `/api/registry/${category}/${rowId}`,
-        // })
-        .then(() => delete_({ meta: { category }, payload: rowId }))
+      deleteOneItem({ category, id: rowId, subdomain: 'registry' })
+        .then((payload) => delete_({ meta: { category }, payload }))
         .catch((err) => appendError(err, `deleting ID ${rowId}`))
         .finally(() => setDeletingIds(deletingIds.filter((id) => id !== rowId)));
     };

@@ -1,5 +1,16 @@
 import connection from './connection';
 
+export function deleteOneItem({ category, id, subdomain }) {
+  const meta = {
+    category,
+    context: subdomain,
+  };
+  const room = `/${subdomain}/${category}/${id}`;
+  const path = `/api${room}`;
+
+  return connection.request({ meta, type: 'delete', path, room });
+}
+
 export function getCategoryItems({ category, createUpdate, subdomain, }) {
   return connection
     .request({

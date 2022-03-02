@@ -9,18 +9,19 @@ export default function useSubmit({ category, http, item, onSubmitted }) {
     setSaving(true);
     const subdomain = 'registry';
     const connection = connectionRef.current;
+    const updating = Boolean(item);
 
     const meta = {
       category,
       context: 'registry',
     };
-    const path = `/api/registry/${category}`;
-    const request = item
+    const path = `/api/${subdomain}/${category}`;
+    const request = updating
       ? {
           body,
           meta,
           path: `${path}/${item.id}`,
-          room: `${category}:${item.id}`,
+          room: `/${subdomain}/${category}/${item.id}`,
           type: 'update',
         }
       : {
@@ -30,7 +31,7 @@ export default function useSubmit({ category, http, item, onSubmitted }) {
           room: `/${subdomain}/${category}`,
           type: 'create',
         };
-    const promise = http
+    const promise = http && updating === false
       ? connection.requestWithHttp(request)
       : connection.request(request);
 

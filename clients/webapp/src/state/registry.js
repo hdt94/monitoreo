@@ -66,7 +66,7 @@ function registryReducer(state, action) {
     }
     case DELETE_ITEM: {
       const { category } = action.meta;
-      const id = action.payload;
+      const { id } = action.payload;
       const data = state[category];
 
       const itemsMap = { ...data.itemsMap };

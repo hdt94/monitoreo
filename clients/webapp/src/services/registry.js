@@ -2,12 +2,6 @@ import connection from './connection';
 import { __fetch, __get } from './http';
 
 
-export function deleteOneItem(resources, id) {
-  const url = `/api/registry/${resources}/${id}`;
-
-  return __fetch(url, { method: 'DELETE' });
-}
-
 export function getOneItem(resources, id) {
   const url = `/api/registry/${resources}/${id}`;
 
