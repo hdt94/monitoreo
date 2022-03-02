@@ -41,7 +41,7 @@ export default function useSubscribeBatchJob({
       }
       case "JOB_STATE_DONE": {
         onMessage('Job has been finalized')
-        updateExecutionState('executed');
+        updateExecutionState('finalized');
         return;
       }
       case "JOB_STATE_FAILED": {

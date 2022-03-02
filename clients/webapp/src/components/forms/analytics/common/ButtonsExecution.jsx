@@ -7,16 +7,16 @@ import {
 
 function renderTexts(executionState) {
   if (executionState.cancelling) {
-    return { primary: "Execute", secondary: "Cancelling..." };
+    return { primary: "Run", secondary: "Cancelling..." };
   }
-  if (executionState.executed) {
+  if (executionState.finalized) {
     return { primary: "Save", secondary: "Discard" };
   }
-  if (executionState.executing) {
-    return { primary: "Executing...", secondary: "Cancel" };
+  if (executionState.running) {
+    return { primary: "Running...", secondary: "Cancel" };
   }
   if (executionState.inputting) {
-    return { primary: "Execute", secondary: "Reset" };
+    return { primary: "Run", secondary: "Reset" };
   }
   if (executionState.requesting) {
     return { primary: "Requesting...", secondary: "Cancel" };
@@ -29,9 +29,7 @@ function renderTexts(executionState) {
 }
 
 export default function ButtonsExecution({ executionState, handleCancelDiscardReset, sx = {} }) {
-  // export default function ButtonsExecution({ executed, handleCancelDiscardReset, handleSave, isSubmitting }) {
-
-  const disabledPrimary = !(executionState.inputting || executionState.executed);
+  const disabledPrimary = !(executionState.inputting || executionState.finalized);
   const disableSecondary = executionState.cancelling || executionState.saving;
   const text = renderTexts(executionState);
   const minWidth = '10em';

@@ -32,7 +32,7 @@ export default function useSubmitCancelDiscard({
     }
 
     // Cancel
-    if (executionState.executing) {
+    if (executionState.running) {
       updateExecutionState('cancelling');
 
       // Only jobs are cancellable
@@ -51,7 +51,7 @@ export default function useSubmitCancelDiscard({
     }
 
     // Discard as analysis
-    if (executionState.executed) {
+    if (executionState.finalized) {
       setExecutionId(null);
       updateExecutionState('inputting');
       return
@@ -63,7 +63,7 @@ export default function useSubmitCancelDiscard({
   const handleSubmit = useCallback(async function submit(values) {
     if (executionState.inputting) {
       updateExecutionState('requesting');
-    } else if (executionState.executed) {
+    } else if (executionState.finalized) {
       // TODO save as analysis
       updateExecutionState('saving');
       return alert('Not available');
@@ -89,7 +89,7 @@ export default function useSubmitCancelDiscard({
       if (cancelRequestedRef.current) {
         handleCancelDiscard({ jobId: response.id });
       } else {
-        updateExecutionState('executing');
+        updateExecutionState('running');
         if (batching) {
           // TODO createUpdate
           setExecutionId(response.executionId);
@@ -103,7 +103,7 @@ export default function useSubmitCancelDiscard({
       updateExecutionState('inputting');
       appendError(error)
     }
-  }, []);
+  }, [executionState, templates, userId]);
 
   return { executionState, handleCancelDiscard, handleSubmit };
 }

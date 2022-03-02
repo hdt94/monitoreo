@@ -24,7 +24,7 @@ export default function useSubmitCancel({ appendError }) {
       return
     }
 
-    if (executionState.executing) {
+    if (executionState.running) {
       updateExecutionState('cancelling');
       try {
         await cancelJob({ jobId })

@@ -2,10 +2,10 @@ import { useState } from "react";
 
 const baseState = {
   cancelling: false,
-  executed: false,
-  executing: false,
+  finalized: false,
   inputting: false,
   requesting: false,
+  running: false,
   saving: false,
 };
 const initialState = {
