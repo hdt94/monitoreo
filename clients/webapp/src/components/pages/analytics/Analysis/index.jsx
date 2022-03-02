@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { Paper, Typography } from "@mui/material";
 
-import useInitialRequestEffect from "./useInitialRequestEffect";
 import useSubmitCancelDiscard from "./useSubmitCancelDiscard";
 import useSubscribeBatchJob from "./useSubscribeBatchJob";
 
+import ZeroTemplates from 'components/pages/analytics/common/ZeroTemplates'
 import useExecutionState from 'components/pages/analytics/common/useExecutionState';
+import useRequestDashboardsTemplates from 'components/pages/analytics/common/useRequestDashboardsTemplates'
 
 import GrafanaDashboards from "components/common/GrafanaDashboards";
 import AnalysisExecutionForm from "components/forms/analytics/AnalysisExecutionForm";
 
 import { useAnalytics } from "components/contexts/analytics";
+
 
 import useArray from "components/pages/common/useArray"
 import useErrors from "components/pages/common/useErrors"
@@ -30,10 +32,11 @@ function Analysis() {
   /* TEMP */
   const tags = ["execution", "modal"];
 
-  const { dashboards, requested } = useInitialRequestEffect({
+  const { dashboards, loading } = useRequestDashboardsTemplates({
     onError: appendError,
     tags
-  })
+  });
+
   useSubscribeBatchJob({
     batchJobId,
     onError: appendError,
@@ -58,15 +61,7 @@ function Analysis() {
   };
 
   if (templates.items.length === 0) {
-    return (
-      <Typography>
-        {
-          requested
-            ? "There are no records of templates for analysis"
-            : "Loading templates for analysis..."
-        }
-      </Typography>
-    );
+    return <ZeroTemplates loading={loading} />;
   }
 
   return (
