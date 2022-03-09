@@ -6,6 +6,7 @@ services:
       - PORT=${PORT_SERVICE_REGISTRY:-3000}
       - STORE_MONGO_DB=registry
       - STORE_MONGO_URI=mongodb://dev:devpassword@registry_db:27017/
+      - USERS_URL=users:${PORT_SERVICE_USERS:-3000}
     depends_on:
     - registry_db
   registry_db:

@@ -18,7 +18,7 @@ export default function useSubmitCancelDiscard({
   updateExecutionState
 }) {
   const { createUpdate, templates } = useAnalytics();
-  const { userId } = useAuth();
+  const { accessToken, userId } = useAuth();
 
   const [cancelRequested, setCancelRequested] = useState(false);
   const cancelRequestedRef = useRef();
@@ -39,7 +39,7 @@ export default function useSubmitCancelDiscard({
       const jobId = args?.jobId || batchJobId;
       if (jobId) {
         try {
-          const response = await cancelJob({ jobId })
+          const response = await cancelJob({ accessToken, jobId })
           // TODO createUpdate
         }
         catch ({ error }) {
@@ -83,8 +83,8 @@ export default function useSubmitCancelDiscard({
     try {
       const batching = templates.entities[templateId].type === 'batch';
       const response = batching
-        ? await createJob({ body })
-        : await requestExecution({ body });
+        ? await createJob({ accessToken, body })
+        : await requestExecution({ accessToken, body });
 
       if (cancelRequestedRef.current) {
         handleCancelDiscard({ jobId: response.id });

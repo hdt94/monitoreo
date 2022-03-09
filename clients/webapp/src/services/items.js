@@ -1,14 +1,17 @@
 import connection from './connection';
 
-export function deleteOneItem({ category, id, subdomain }) {
+export function deleteOneItem({ accessToken, category, id, subdomain }) {
   const meta = {
     category,
     context: subdomain,
   };
   const room = `/${subdomain}/${category}/${id}`;
   const path = `/api${room}`;
+  const options = {
+    headers: { 'X-Access-Token': accessToken },
+  };
 
-  return connection.request({ meta, type: 'delete', path, room });
+  return connection.request({ meta, type: 'delete', options, path, room });
 }
 
 export function getCategoryItems({ category, createUpdate, subdomain, }) {
@@ -37,4 +40,39 @@ export function getCategoryItems({ category, createUpdate, subdomain, }) {
 
       return Promise.reject(error);
     })
+}
+
+export function writeOneItem({ accessToken, body, category, http, id, subdomain }) {
+  const updating = Boolean(id);
+
+  const options = {
+    headers: { 'X-Access-Token': accessToken },
+  };
+  const meta = {
+    category,
+    context: subdomain,
+  };
+  const path = `/api/${subdomain}/${category}`;
+  const request = {
+    body,
+    meta,
+    options,
+    ...(updating
+      ? {
+        path: `${path}/${id}`,
+        room: `/${subdomain}/${category}/${id}`,
+        type: 'update',
+      }
+      : {
+        path,
+        room: `/${subdomain}/${category}`,
+        type: 'create',
+      })
+  };
+
+  const promise = http && updating === false
+    ? connection.requestWithHttp(request)
+    : connection.request(request);
+
+  return promise;
 }

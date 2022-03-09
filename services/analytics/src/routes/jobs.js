@@ -1,15 +1,16 @@
 const { Router } = require('express');
 
 const controllers = require('../controllers/jobs');
-const { inputFilesMiddleware } = require('../middleware/input');
+const { authenticationMiddleware: auth } = require('../middleware/auth');
+const { inputFilesMiddleware: input } = require('../middleware/input');
 
 function initJobsRouter() {
   const router = new Router();
 
   router.get('/', controllers.readMany);
-  router.post('/', inputFilesMiddleware, controllers.createOne);
+  router.post('/', [auth, input], controllers.createOne);
   router.get('/:id', controllers.readOne);
-  router.post('/:id/cancel', controllers.cancelOne);
+  router.post('/:id/cancel', auth, controllers.cancelOne);
 
   return router;
 }

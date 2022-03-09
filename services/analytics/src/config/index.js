@@ -24,6 +24,7 @@ class Config {
       'LIVE_WS_URL',
       'PROCESSING_RUNNER',
       'REGISTRY_URL',
+      'USERS_URL',
     ];
     envFields.forEach((field) => {
       this[field] = process.env[field];

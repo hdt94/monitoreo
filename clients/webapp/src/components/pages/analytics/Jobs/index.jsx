@@ -6,6 +6,7 @@ import createRowActions from './createRowActions';
 import defineTableColumns from './defineTableColumns';
 
 import { useAnalytics } from 'components/contexts/analytics';
+import { useAuth } from 'components/contexts/auth';
 
 import useArray from "components/pages/common/useArray";
 import useErrors from "components/pages/common/useErrors";
@@ -19,13 +20,16 @@ import { cancelJob } from "services/analytics";
 export default function Jobs() {
   const category = 'jobs';
   const subdomain = 'analytics';
-    
+
   const [cancellingIds, addCancellingId, removeCancellingId] = useArray([]);
   const { errors, appendError } = useErrors();
   const navigate = useNavigate();
-  
+
   const context = useAnalytics();
   const { createUpdate, jobs } = context;
+
+  const { accessToken } = useAuth();
+
   useRequestSubscribeEffect({
     category,
     createUpdate,
@@ -35,7 +39,7 @@ export default function Jobs() {
 
   const onCancel = (jobId) => {
     addCancellingId(jobId);
-    cancelJob({ jobId })
+    cancelJob({ accessToken, jobId })
       .then(response => {
         console.log(response)
         // TODO createUpdate

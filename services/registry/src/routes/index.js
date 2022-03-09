@@ -1,5 +1,6 @@
 const { Router } = require('express');
 
+const { authenticationMiddleware: auth } = require('../middleware/auth');
 const filesMiddleware = require('../middleware/measuresFiles');
 
 const lookupAggMap = require('../db/lookups');
@@ -10,10 +11,10 @@ function crud(collection) {
   const lookupAgg = lookupAggMap?.[collection];
 
   router.get('/', controllers.readerOfMany(collection, lookupAgg));
-  router.post('/', controllers.creatorOfOne(collection, lookupAgg));
+  router.post('/', auth, controllers.creatorOfOne(collection, lookupAgg));
   router.get('/:id', controllers.readerOfOne(collection));
-  router.put('/:id', controllers.updaterOfOne(collection));
-  router.delete('/:id', controllers.removerOfOne(collection));
+  router.put('/:id', auth, controllers.updaterOfOne(collection));
+  router.delete('/:id', auth, controllers.removerOfOne(collection));
 
   return router;
 }
@@ -29,7 +30,7 @@ function measuresRouter() {
     MEASURES_FILES_DIR,
     MEASURES_FILES_STORAGE_MODE,
   } = process.env;
-  const middlewares = filesMiddleware.middlewares({
+  const files = filesMiddleware.middlewares({
     bucketName: MEASURES_FILES_BUCKET,
     destination: MEASURES_FILES_DIR,
     projectId: GCP_PROJECT_ID,
@@ -40,10 +41,10 @@ function measuresRouter() {
 
   // const router = crud('measures');
   router.get('/', controllers.readerOfMany(collection, lookupAgg));
-  router.post('/', middlewares, controllers.creatorOfOne(collection));
+  router.post('/', [auth, files], controllers.creatorOfOne(collection));
   router.get('/:id', controllers.readerOfOne(collection));
-  router.put('/:id', controllers.updaterOfOne(collection));
-  router.delete('/:id', controllers.removerOfOne(collection));
+  router.put('/:id', auth, controllers.updaterOfOne(collection));
+  router.delete('/:id', auth, controllers.removerOfOne(collection));
 
   return router;
 }

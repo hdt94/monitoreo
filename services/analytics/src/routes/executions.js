@@ -1,13 +1,14 @@
 const { Router } = require('express');
 
 const controllers = require('../controllers/executions');
-const { inputFilesMiddleware } = require('../middleware/input');
+const { authenticationMiddleware: auth } = require('../middleware/auth');
+const { inputFilesMiddleware: input } = require('../middleware/input');
 
 function initExecutionsRouter() {
   const router = new Router();
 
   router.get('/', controllers.readMany);
-  router.post('/', inputFilesMiddleware, controllers.createOne);
+  router.post('/', [auth, input], controllers.createOne);
 
   return router;
 }

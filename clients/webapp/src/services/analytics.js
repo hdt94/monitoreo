@@ -41,11 +41,14 @@ export function getTemplates() {
   })
 }
 
-export async function cancelJob({ jobId }) {
+export async function cancelJob({ accessToken, jobId }) {
   const request = {
     meta: {
       category: 'jobs',
       context: 'analytics',
+    },
+    options: {
+      headers: { 'X-Access-Token': accessToken },
     },
     path: `/api/analytics/jobs/${jobId}/cancel`,
     room: `/analytics/jobs/${jobId}`,
@@ -57,14 +60,17 @@ export async function cancelJob({ jobId }) {
   return response;
 }
 
-export async function createJob({ body }) {
+export async function createJob({ accessToken, body }) {
   const request = {
     body,
     meta: {
       category: 'jobs',
       context: 'analytics',
     },
-    path: '/api/analytics/jobs',
+    options: {
+      headers: { 'X-Access-Token': accessToken },
+    },
+    path: '/api/analytics/jobs/',
     room: '/analytics/jobs',
     type: 'create',
   };
@@ -74,12 +80,15 @@ export async function createJob({ body }) {
   return response;
 }
 
-export async function requestExecution({ body }) {
+export async function requestExecution({ accessToken, body }) {
   const request = {
     body,
     meta: {
       category: 'executions',
       context: 'analytics',
+    },
+    options: {
+      headers: { 'X-Access-Token': accessToken },
     },
     path: '/api/analytics/executions',
     room: '/analytics/executions',

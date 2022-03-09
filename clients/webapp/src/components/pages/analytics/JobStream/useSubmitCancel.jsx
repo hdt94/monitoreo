@@ -8,7 +8,7 @@ import useExecutionState from 'components/pages/analytics/common/useExecutionSta
 import { cancelJob, createJob } from "services/analytics";
 
 export default function useSubmitCancel({ appendError }) {
-  const { userId } = useAuth();
+  const { accessToken, userId } = useAuth();
   const navigate = useNavigate();
 
   const { executionState, updateExecutionState } = useExecutionState();
@@ -27,7 +27,7 @@ export default function useSubmitCancel({ appendError }) {
     if (executionState.running) {
       updateExecutionState('cancelling');
       try {
-        await cancelJob({ jobId })
+        await cancelJob({ accessToken, jobId })
       } catch ({ error }) {
         appendError(error);
       }
@@ -52,7 +52,7 @@ export default function useSubmitCancel({ appendError }) {
     };
 
     try {
-      const { jobId } = await createJob({ body });
+      const { jobId } = await createJob({ accessToken, body });
 
       if (cancelRequestedRef.current) {
         await handleCancel({ jobId });

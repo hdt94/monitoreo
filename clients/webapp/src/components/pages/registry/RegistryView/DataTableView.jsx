@@ -4,6 +4,7 @@ import { DataGrid } from "@mui/x-data-grid";
 
 import { useRegistry } from "../../../../state/registry";
 
+import { useAuth } from "components/contexts/auth";
 import useRequestSubscribeEffect from "components/pages/common/tabulation/useRequestSubscribeEffect";
 import { deleteOneItem } from "services/items";
 
@@ -56,9 +57,12 @@ function defineActionsGridCol(RowActions) {
 }
 
 function DataTableView({ category, defineTableColumns, enableActions = true, onEdit }) {
+  const subdomain = 'registry';
+
   const [errors, setErrors] = useState([]);
   const [deletingIds, setDeletingIds] = useState([]);
 
+  const { accessToken } = useAuth();
   const registry = useRegistry();
   const { createUpdate, delete_ } = registry;
   const { items } = registry[category];
@@ -78,7 +82,7 @@ function DataTableView({ category, defineTableColumns, enableActions = true, onE
     category,
     createUpdate,
     onError: appendError,
-    subdomain: 'registry'
+    subdomain
   })
 
   // Table columns
@@ -93,7 +97,7 @@ function DataTableView({ category, defineTableColumns, enableActions = true, onE
         setDeletingIds([...deletingIds, rowId]);
       }
 
-      deleteOneItem({ category, id: rowId, subdomain: 'registry' })
+      deleteOneItem({ accessToken, category, id: rowId, subdomain })
         .then((payload) => delete_({ meta: { category }, payload }))
         .catch((err) => appendError(err, `deleting ID ${rowId}`))
         .finally(() => setDeletingIds(deletingIds.filter((id) => id !== rowId)));

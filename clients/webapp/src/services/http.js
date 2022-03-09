@@ -97,31 +97,38 @@ export function __get({ options = null, path, queryParams = null }) {
   return __fetch(`${path}?${params.toString()}`, options || {});
 }
 
-export function __delete({ path }) {
-  return __fetch(path, { method: 'DELETE' });
+export function __delete({ options, path }) {
+  return __fetch(path, { ...options, method: 'DELETE' });
 }
 
-export function __post({ path, body }) {
+function __writeJson({ body, method, options = {}, path }) {
+  const headers = {
+    ...(options.headers || {}),
+    'Content-Type': 'application/json',
+  };
+
+  return __fetch(path, {
+    ...options,
+    body: JSON.stringify(body),
+    headers,
+    method,
+  });
+}
+
+export function __post({ options, path, body }) {
   const method = 'POST';
 
   if (body?.files?.length > 0) {
     return __fetch(path, {
+      ...options, 
       method,
       body: encodeAsFormData(body),
     });
   }
 
-  return __fetch(path, {
-    method,
-    body: JSON.stringify(body),
-    headers: { 'Content-Type': 'application/json' },
-  });
+  return __writeJson({method: 'POST',  body, options, path});
 }
 
-export function __put({ path, body }) {
-  return __fetch(path, {
-    method: 'PUT',
-    body: JSON.stringify(body),
-    headers: { 'Content-Type': 'application/json' },
-  });
+export function __put(args) {
+  return __writeJson({method: 'PUT', ...args});
 }
