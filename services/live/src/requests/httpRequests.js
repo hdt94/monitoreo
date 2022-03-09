@@ -43,24 +43,30 @@ function __get({ options = null, path, queryParams = null }) {
   return __fetch(`${path}?${params.toString()}`, options || {});
 }
 
-function __delete({ path }) {
-  return __fetch(path, { method: 'DELETE' });
+function __delete({ options, path }) {
+  return __fetch(path, { ...options, method: 'DELETE' });
 }
 
-function __post({ path, body }) {
+function __write({ body, method, options = {}, path }) {
+  const headers = {
+    ...(options.headers || {}),
+    'Content-Type': 'application/json',
+  };
+
   return __fetch(path, {
-    method: 'POST',
+    ...options,
     body: JSON.stringify(body),
-    headers: { 'Content-Type': 'application/json' },
+    headers,
+    method,
   });
 }
 
-function __put({ path, body }) {
-  return __fetch(path, {
-    method: 'PUT',
-    body: JSON.stringify(body),
-    headers: { 'Content-Type': 'application/json' },
-  });
+function __post(args) {
+  return __write({ method: 'POST', ...args });
+}
+
+function __put(args) {
+  return __write({ method: 'PUT', ...args });
 }
 
 module.exports = {
