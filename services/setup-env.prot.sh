@@ -37,5 +37,5 @@ HOST_DOMAIN=${HOST_DOMAIN}
 MEASURES_FILES_STORAGE_MODE=${MEASURES_FILES_STORAGE_MODE:-gs}
 PATH_WEBAPP=${MONITOREO_ROOT}/clients/webapp
 
-COMPOSE_FILE=\${PATH_SERVICE_PROXY}/docker-compose.common.yaml:\${PATH_SERVICE_PROXY}/docker-compose.prot.yaml:\${PATH_SERVICE_ANALYTICS}/docker-compose.common.yaml:\${PATH_SERVICE_ANALYTICS}/docker-compose.prot.yaml:\${PATH_SERVICE_GRAFANA}/docker-compose.common.yaml:\${PATH_SERVICE_GRAFANA}/docker-compose.prot.yaml:\${PATH_SERVICE_LIVE}/docker-compose.common.yaml:\${PATH_SERVICE_LIVE}/docker-compose.prot.yaml:\${PATH_SERVICE_REGISTRY}/docker-compose.common.yaml:\${PATH_SERVICE_REGISTRY}/docker-compose.prot.yaml:\${PATH_WEBAPP}/docker-compose.prot.yaml
+COMPOSE_FILE=\${PATH_SERVICE_PROXY}/docker-compose.common.yaml:\${PATH_SERVICE_PROXY}/docker-compose.prot.yaml:\${PATH_SERVICE_ANALYTICS}/docker-compose.common.yaml:\${PATH_SERVICE_ANALYTICS}/docker-compose.prot.yaml:\${PATH_SERVICE_GRAFANA}/docker-compose.common.yaml:\${PATH_SERVICE_GRAFANA}/docker-compose.prot.yaml:\${PATH_SERVICE_LIVE}/docker-compose.common.yaml:\${PATH_SERVICE_LIVE}/docker-compose.prot.yaml:\${PATH_SERVICE_REGISTRY}/docker-compose.common.yaml:\${PATH_SERVICE_REGISTRY}/docker-compose.prot.yaml:\${PATH_SERVICE_USERS}/docker-compose.common.yaml:\${PATH_SERVICE_USERS}/docker-compose.prot.yaml:\${PATH_WEBAPP}/docker-compose.prot.yaml
 EOF

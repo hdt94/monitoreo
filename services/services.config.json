@@ -25,5 +25,11 @@
         "port": "3000",
         "port_host": "3004",
         "port_host_debug": "9232"
+    },
+    {
+        "directory": "users",
+        "port": "3000",
+        "port_host": "3005",
+        "port_host_debug": "9233"
     }
 ]

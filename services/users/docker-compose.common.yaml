@@ -1,0 +1,5 @@
+services:
+  users:
+    environment:
+      - GCP_PROJECT_ID=${GCP_PROJECT_ID}
+      - PORT=${PORT_SERVICE_ANALYTICS:-3000}

@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+  users:
+    build:
+      context: ${PATH_SERVICE_USERS:-.}
+      args:
+        - NODE_ENV=development
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys/application_default_credentials.json
+      - NODE_ENV=development
+    volumes:
+      - ${GCP_APPLICATION_CREDENTIALS}:/tmp/keys/application_default_credentials.json:ro

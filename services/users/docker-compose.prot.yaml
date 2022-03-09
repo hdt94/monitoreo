@@ -1,0 +1,8 @@
+services:
+  analytics:
+    build:
+      context: ${PATH_SERVICE_USERS:-.}
+      args:
+        - NODE_ENV=production
+    environment:
+      - NODE_ENV=production
