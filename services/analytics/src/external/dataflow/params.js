@@ -3,10 +3,11 @@ const { getDataflowEnv } = require('./env');
 const { envCloudSecret, streamTopicId } = getDataflowEnv();
 
 function paramsBatchJob({ analysis, executionId, files, userId }) {
+  // TODO validation of parameters
   return {
     'analysis-literal': JSON.stringify(analysis),
     'env-cloud-secret': envCloudSecret,
-    'input-files': files.join('::'),
+    'input-files': Array.isArray(files) ? files.join('::') : files,
     'metadata-literal': JSON.stringify({
       execution_id: executionId,
       job_execution_id: executionId,
