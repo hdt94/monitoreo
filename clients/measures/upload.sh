@@ -26,7 +26,7 @@ upload_file() {
     FILE=$1
     GS_OBJECT="$GS_PREFIX/$(basename $FILE)"
 
-    gsutil -h x-goog-meta-structure_id:${STRUCTURE_ID} cp "$UPLOAD_FILE" "$GS_OBJECT"
+    gsutil -h x-goog-meta-structure_id:${STRUCTURE_ID} cp "$FILE" "$GS_OBJECT"
 }
 
 
