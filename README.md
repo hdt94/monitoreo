@@ -2,7 +2,9 @@
 
 This is a prototype to facilitate the management, development, integration and deployment of information and data analytics pipelines related to management of smart civil infrastructure with structural health monitoring based on IoT/sensing systems. This is deployed to GCP - Google Cloud Platform.
 
-TODO demo
+Demo: [https://www.youtube.com/watch?v=vqtL2tFqQ-g](https://www.youtube.com/watch?v=vqtL2tFqQ-g)
+
+TODO narrate demo
 
 ## Description
 
